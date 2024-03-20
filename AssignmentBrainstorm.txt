@@ -1,10 +1,18 @@
 Classes
 ===================
-- 
+- Customer - CustomerID, CustomerName, CustomerAddress1, CustomerAddress2, CustomerCity, CustomerCounty, CustomerPostcode, CustomerTelephone, CustomerEmailAddress
+- Order - OrderID, Products[ProductID,Quantity], CustomerID, OrderDate
+- OrderDetail - OrderDetailID, OrderID, ProductID, Quantity
+- Product - ProductID, ProductName, ProductImage
+- User - UserID, username, password
+- Basket - BasketID, SessionID
+- BasketItem - BasketItemID, BasketID, Product, Quantity
 
 Additional functionality
 =========================
-- 
+- "Sort By" function for all orders - sort by date, sort by product, sort by customer
+- Admin User Account creation
+- Adding Additional Products
 
 Design types
 =======================
@@ -13,12 +21,19 @@ Design types
 - Object Diagrams
 - State Diagrams
 - Database ERD
-- Screen Design - precise
+- Screen wireframes - precise
 
 Design ideas
 ============================
-Screen 1 - 
+Screen 1 - Product catalog - persistent shopping basket, and nav bar
+Screen 2 - Product details - persistent shopping basket, and nav bar
+Screen 3 - Shopping Basket - no shopping basket, persistent nav bar
+Screen 4 - Place an Order form
+Screen 5 - Invoice
+Screen 6 - Admin login box
+Screen 7 - Admin page
 
 Error handling
 =========================
-- 
+- Incorrect input data types
+- Username/Password incorrect
