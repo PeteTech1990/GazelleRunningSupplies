@@ -1,7 +1,7 @@
 ﻿Assignment brief - summary
 ==============================
 
-
+Specifically with HTML and PHP, create a website with multiple pages that will allow customers to browse and purchase products for Running.
 
 
 
@@ -10,25 +10,61 @@ Assignment brief - checklist
 
 Application requirements
 ------------------------
-1. 
+1. Website must allow users to place an order for products, using an order form
+2. Website must only allow a minimum of 2 products per order
+3. The order form must take names, addresses, phone numbers and emails for customers.
+4. Website will not process purchases
+5. Website will produce an invoice, which will be shown to the user
+6. Website will allow administrators to log in
+7. Website will allow administrators to view all orders within a set time range
+8. Website will allow administrators to view total numbers of items sold, organised by item
 
 Other Requirements
 -----------------------
-1. 
+1. Produce high fidelity wireframes for each page
+2. Produce a site map for the site
+3. Carry out testing of the site, using a testing table
+4. Produce a brief report about the site, including screenshots and code (1000 word count)
+5. Create a database that will hold order details
+6. Produce a video showing the functionality of the website
 
 Higher grades for
 ------------------------
-1. 
+1. Detailed Design.
+2. Creative design.
+3. Correct use of PHP.
+4. Well structured code
+5. Efficient code
+6. Good comments
+7. Aesthetic layout and ease of use.
+8. Correct calculations
+9. Clear testing shown
+
 
 Other ideas
 ----------------------
--
+- use PDF output for invoice
+
+
+Learning Outcomes
+-----------------------
+ - Design and build an application using a range of programming techniques to provide a basic website which includes a user form and process the data which utilises a database held on a server. 
+
+ - Create comprehensive documentation for the solution.
 
 
 Distinction Criteria
 -----------------------
+Originality and Creativity (15) - Excellent design showing a good level of imagination.  Original content presented with a creative flair.
 
+Knowledge & Understanding (15) - Excellent knowledge and depth of understanding of principles and concepts.  Appropriate code and data types used. Very minor or no errors in syntax or efficiency.
 
-Testing - Considerable testing showing clear documentation of all program paths. 
+Code Structure (15) - Structure, layout and style excellent overall with the addition of elucidated comments.
 
-Presentation, grammar and spelling - Work is presented in a professional manner with no errors in regards to spelling and grammar.
+Clarity of programs (15) - Clear and polite to user with regards to inputs and outputs. 
+
+Final Program (20) - Creative interface, robust program that works well.
+
+Testing (15) - Considerable testing showing clear documentation of all paths. 
+
+Presentation, grammar and spelling (5) - Work presented in a professional manner with no errors in regards to spelling and grammar.
