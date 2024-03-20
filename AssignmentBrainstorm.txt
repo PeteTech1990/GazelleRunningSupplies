@@ -1,0 +1,24 @@
+Classes
+===================
+- 
+
+Additional functionality
+=========================
+- 
+
+Design types
+=======================
+- Flow charts
+- Class Diagrams
+- Object Diagrams
+- State Diagrams
+- Database ERD
+- Screen Design - precise
+
+Design ideas
+============================
+Screen 1 - 
+
+Error handling
+=========================
+- 
