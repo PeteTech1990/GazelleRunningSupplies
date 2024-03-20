@@ -1,0 +1,34 @@
+﻿Assignment brief - summary
+==============================
+
+
+
+
+
+Assignment brief - checklist
+===================================
+
+Application requirements
+------------------------
+1. 
+
+Other Requirements
+-----------------------
+1. 
+
+Higher grades for
+------------------------
+1. 
+
+Other ideas
+----------------------
+-
+
+
+Distinction Criteria
+-----------------------
+
+
+Testing - Considerable testing showing clear documentation of all program paths. 
+
+Presentation, grammar and spelling - Work is presented in a professional manner with no errors in regards to spelling and grammar.
