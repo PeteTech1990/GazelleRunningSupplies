@@ -27,6 +27,10 @@ p {
     font-size: 1em;
 }
 
+td, th {
+    border: solid black 1pt;
+}
+
 #logoImage {
     height: 12em;
     width: 12em;
@@ -47,6 +51,10 @@ p {
     
 }
 
+#adminUserName {
+    float: left;
+}
+
 #header {
     margin-bottom: 3vh;
     height: 15vh;
@@ -62,7 +70,6 @@ p {
     grid-column-start: 1;
     grid-row-start: 3;
     grid-column-end: 3;
-    border: solid black 2pt;
 }
 
 footer {    
@@ -115,17 +122,263 @@ footer {
     margin:1em;
     display:flex;
     justify-content:space-evenly;
+    flex-wrap:wrap;
+    flex-direction:row;
 }
 
-/*https://www.w3schools.com/howto/howto_js_accordion.asp*/
+.productSpan {
+    width: 15em;
+    height: 16em;
+    padding: 2em;
+    display: inline-block;
+    align-content: space-between;
+    background-color: #BDE3FF;
+}
 
+.productImage {
+    height: 10em;
+    width: 15em;
+}
+
+.productDetails {
+    width: 15em;
+    height:fit-content;
+    display:flex;
+    flex-direction:row;
+    justify-content:space-between;
+    flex-wrap:nowrap;
+}
+
+.uiButton {
+    width: 15em;
+    height: 3em;
+    background-color: #000000;
+    color: #FFFFFF;
+    font-size: 1em;
+}
+
+.modalButton{
+    float:right;
+}
+
+.modalOuter {
+    width: 20vw;
+    height: 30vw;
+    padding: 1em;
+    display: inline-block;
+}
+
+.productImageModal {
+    width: 21em;
+    height: 12em;
+    margin-top: 1em;
+}
+
+.modalInner {
+    width: fit-content;
+    height: fit-content;
+    min-height: 30vh;
+    display: inline-block;
+}
+}
+
+.basketItems {
+    overscroll-behavior-x: auto;
+}
+
+.basketTotal {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+}
+
+#orderBreakdown {
+    height: fit-content;
+    width: fit-content;
+    padding: 3em 1em 3em 1em;
+    margin: 2em;
+    background-color: #97DEC9;
+    min-width: 94vw;
+}
+
+#customerDetails {
+    height: fit-content;
+    width: fit-content;
+    padding: 3em 1em 3em 1em;
+    margin: 2em;
+    background-color: #97DEC9;
+    display: inline-block;
+    min-width: 94vw;
+}
+
+#customerActions {
+    height: fit-content;
+    width: fit-content;
+    padding: 3em;
+    margin: 1em 1em 1em 16%;
+    background-color: #97DEC9;
+    display: flex;
+    min-width: 60vw;
+    flex-direction: row;
+    justify-content: space-between;
+}
+    
+#orderItems {
+    height: fit-content;
+    width: 90vw;
+    padding: 2em;
+    background-color: #FFFFFF;
+    display: inline-block;
+    max-width: 91vw;
+}
+
+#orderTotalLabels {
+    display:flex;
+}
+
+.inputAreas {
+    float:right;
+
+}
+
+    .inputAreas > input {
+        width: 100em;
+        height: 2em;
+    }
+
+#customerNameInput {
+    margin: 1em 0 1em 0;
+}
+
+#address1Input {
+    margin-top: 1em;
+}
+
+#postcodeInput {
+    margin-bottom: 1em;
+}
+
+#phoneInput {
+    margin-top: 1em;
+}
+
+#invoiceDetails {
+    height: 110vh;
+    width: 90vw;
+    padding: 3em;
+    background-color: #97DEC9;
+    display: inline-block;
+    margin: 3em;
+}
+
+#invoiceNumberLabels {
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-start;
+}
+
+#invoiceNumber {
+    margin-left: 2em;
+}
+
+#fullName {
+    margin-left: 5em;
+}
+
+.customerDetailsInvLabel {
+    margin-left: 8em;
+}
+
+#orderBreakdownTable {
+    background-color: white;
+    border: solid black 2pt;
+    width: 85vw;
+    margin: 3em;
+}
+
+#orderTotals {
+    display: flex;
+    justify-content: flex-end;
+}
+
+#orderTotal {
+    margin-left: 2em;
+}
+
+#customerActionsInv {
+    height: fit-content;
+    width: 40vw;
+    padding: 3em;
+    background-color: #97DEC9;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-around;
+    margin-left: 30%;
+}
+
+#userDetails {
+    height: 50vh;
+    width: 80vw;
+    padding: 3em;
+    display: flex;
+    background-color: #97DEC9;
+    align-content: space-around;
+    margin-left: 6vw;
+    flex-direction: column;
+    justify-content: space-evenly;
+    align-items: center;
+}
+
+
+#userActions {
+    height: fit-content;
+    width: 20vw;
+    padding: 3em;
+    background-color: #97DEC9;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-around;
+    margin-left: 30%;
+}
+
+.inputAreasLogin {
+    float: right;
+}
+
+    .inputAreasLogin > input {
+        width: 80em;
+        height: 2em;
+    }
+
+    #txtPassword {
+        margin-left: 0.25em;
+    }
+
+#userDetailsForm {
+    display: flex;
+    flex-direction: column;
+    align-content: flex-start;
+    align-items: center;
+}
+
+#adminTabs {
+    height: 4em;
+    width: 80vw;
+    display:flex;
+}
+
+
+/*https://www.w3schools.com/howto/howto_js_accordion.asp*/
 .accordion {
-    background-color: #eee;
+    background-color: #FFFFFF;
     color: #444;
     cursor: pointer;
     padding: 18px;
     width: 100%;
-    border: none;
+    border-top: solid black 2pt;
+    border-left: none;
+    border-right: none;
+    border-bottom: none;
     text-align: left;
     outline: none;
     font-size: 15px;
@@ -133,7 +386,7 @@ footer {
 }
 
     .active, .accordion:hover {
-        background-color: #ccc;
+        background-color: #FFFFFF;
     }
 
 .panel {
@@ -141,4 +394,61 @@ footer {
     display: none;
     background-color: white;
     overflow: hidden;
+}
+/*****************************************************************/
+
+/*https://www.w3schools.com/howto/howto_css_modals.asp*/
+
+/* The Modal (background) */
+.modal {
+    display: none; /* Hidden by default */
+    position: fixed; /* Stay in place */
+    z-index: 1; /* Sit on top */
+    left: 0;
+    top: 0;
+    width: 100%; /* Full width */
+    height: 100%; /* Full height */
+    overflow: auto; /* Enable scroll if needed */
+    background-color: rgb(0,0,0); /* Fallback color */
+    background-color: rgba(0,0,0,0.4); /* Black w/ opacity */
+}
+
+/* Modal Content/Box */
+.modal-content-product {
+    background-color: #fefefe;
+    margin: 15% auto; /* 15% from the top and centered */
+    padding: 20px;
+    border: 1px solid #888;
+    width: 20vw;
+    height: fit-content;
+    min-height: 75vh;
+}
+
+/* The Close Button */
+.close {
+    color: #aaa;
+    float: right;
+    font-size: 28px;
+    font-weight: bold;
+}
+
+    .close:hover,
+    .close:focus {
+        color: black;
+        text-decoration: none;
+        cursor: pointer;
+    }
+
+/*****************************************************************/
+
+/* Modal Content/Box */
+.modal-content-basket {
+    background-color: #fefefe;
+    margin: 15% auto;
+    padding: 20px;
+    border: 1px solid #888;
+    width: 30vw;
+    height: fit-content;
+    min-height: 65vh;
+
 }
