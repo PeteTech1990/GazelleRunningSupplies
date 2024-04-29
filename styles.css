@@ -157,6 +157,7 @@ footer {
     background-color: #000000;
     color: #FFFFFF;
     font-size: 1em;
+    margin-top: 1em;
 }
 
 .modalButton{
@@ -244,7 +245,7 @@ footer {
 }
 
     .inputAreas > input {
-        width: 100em;
+        width: 80em;
         height: 2em;
     }
 
@@ -348,12 +349,12 @@ footer {
 }
 
     .inputAreasLogin > input {
-        width: 80em;
+        width: 60em;
         height: 2em;
     }
 
     #txtPassword {
-        margin-left: 0.25em;
+        margin-left: 0.3em;
     }
 
 #userDetailsForm {
@@ -524,7 +525,7 @@ footer {
     margin: 15% auto; /* 15% from the top and centered */
     padding: 20px;
     border: 1px solid #888;
-    width: 20vw;
+    width: 30vw;
     height: fit-content;
     min-height: 75vh;
 }
@@ -554,6 +555,6 @@ footer {
     border: 1px solid #888;
     width: 30vw;
     height: fit-content;
-    min-height: 65vh;
+    min-height: 80vh;
 
 }
