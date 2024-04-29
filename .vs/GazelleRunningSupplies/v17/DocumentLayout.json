@@ -3,16 +3,12 @@
   "WorkspaceRootPath": "C:\\Users\\Home\\source\\repos\\GazelleRunningSupplies\\",
   "Documents": [
     {
-      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|C:\\Users\\Home\\source\\repos\\GazelleRunningSupplies\\index.html||{40D31677-CBC0-4297-A9EF-89D907823A98}",
-      "RelativeMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|solutionrelative:index.html||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|C:\\Users\\Home\\source\\repos\\GazelleRunningSupplies\\index.php||{3D2461EC-8045-4AA9-ABFB-812292AE795D}",
+      "RelativeMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|solutionrelative:index.php||{3D2461EC-8045-4AA9-ABFB-812292AE795D}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|C:\\Users\\Home\\source\\repos\\GazelleRunningSupplies\\styles.css||{A5401142-F49D-43DB-90B1-F57BA349E55C}",
-      "RelativeMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|solutionrelative:styles.css||{A5401142-F49D-43DB-90B1-F57BA349E55C}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|C:\\Users\\Home\\source\\repos\\GazelleRunningSupplies\\myJavaScript.js||{14D17961-FE51-464D-9111-C4AF11D7D99A}",
-      "RelativeMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|solutionrelative:myJavaScript.js||{14D17961-FE51-464D-9111-C4AF11D7D99A}"
+      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|C:\\Users\\Home\\Source\\Repos\\GazelleRunningSupplies\\Product.php||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|solutionrelative:Product.php||{40D31677-CBC0-4297-A9EF-89D907823A98}"
     }
   ],
   "DocumentGroupContainers": [
@@ -22,44 +18,32 @@
       "DocumentGroups": [
         {
           "DockedWidth": 200,
-          "SelectedChildIndex": 2,
+          "SelectedChildIndex": 1,
           "Children": [
             {
               "$type": "Document",
-              "DocumentIndex": 2,
-              "Title": "myJavaScript.js",
-              "DocumentMoniker": "C:\\Users\\Home\\source\\repos\\GazelleRunningSupplies\\myJavaScript.js",
-              "RelativeDocumentMoniker": "myJavaScript.js",
-              "ToolTip": "C:\\Users\\Home\\source\\repos\\GazelleRunningSupplies\\myJavaScript.js",
-              "RelativeToolTip": "myJavaScript.js",
-              "ViewState": "AQIAAAAAAAAAAAAAAAAAAA8AAAABAAAA",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001646|",
-              "WhenOpened": "2024-04-24T17:35:32.076Z"
-            },
-            {
-              "$type": "Document",
               "DocumentIndex": 1,
-              "Title": "styles.css",
-              "DocumentMoniker": "C:\\Users\\Home\\source\\repos\\GazelleRunningSupplies\\styles.css",
-              "RelativeDocumentMoniker": "styles.css",
-              "ToolTip": "C:\\Users\\Home\\source\\repos\\GazelleRunningSupplies\\styles.css",
-              "RelativeToolTip": "styles.css",
-              "ViewState": "AQIAAFYAAAAAAAAAAAAAAGMAAAAEAAAA",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003000|",
-              "WhenOpened": "2024-04-24T16:11:00.661Z",
+              "Title": "Product.php",
+              "DocumentMoniker": "C:\\Users\\Home\\source\\repos\\GazelleRunningSupplies\\Product.php",
+              "RelativeDocumentMoniker": "Product.php",
+              "ToolTip": "C:\\Users\\Home\\source\\repos\\GazelleRunningSupplies\\Product.php",
+              "RelativeToolTip": "Product.php",
+              "ViewState": "AQIAAAAAAAAAAAAAAAAAAAIAAAAAAAAA",
+              "Icon": "89320d42-7831-4f47-839a-c227d3a60919.000001|",
+              "WhenOpened": "2024-04-29T17:37:57.717Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
               "DocumentIndex": 0,
-              "Title": "index.html",
-              "DocumentMoniker": "C:\\Users\\Home\\source\\repos\\GazelleRunningSupplies\\index.html",
-              "RelativeDocumentMoniker": "index.html",
-              "ToolTip": "C:\\Users\\Home\\source\\repos\\GazelleRunningSupplies\\index.html",
-              "RelativeToolTip": "index.html",
-              "ViewState": "AQIAACoAAAAAAAAAAAAAAEAAAAARAAAA",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001512|",
-              "WhenOpened": "2024-04-24T15:57:58.132Z",
+              "Title": "index.php",
+              "DocumentMoniker": "C:\\Users\\Home\\source\\repos\\GazelleRunningSupplies\\index.php",
+              "RelativeDocumentMoniker": "index.php",
+              "ToolTip": "C:\\Users\\Home\\source\\repos\\GazelleRunningSupplies\\index.php",
+              "RelativeToolTip": "index.php",
+              "ViewState": "AQIAAAAAAAAAAAAAAAAAAAMAAAAjAAAA",
+              "Icon": "89320d42-7831-4f47-839a-c227d3a60919.000001|",
+              "WhenOpened": "2024-04-29T17:35:41.923Z",
               "EditorCaption": ""
             }
           ]

@@ -1,3 +1,79 @@
+<?php
+        namespace gazelleRunningSupplies;
+        use mysqli;
+        
+        $sqlServer = "localhost";
+        $database = "gazellerunningsupplies";
+
+        $sqlConnection = new mysqli($sqlServer, "sa", "sa", $database);
+
+         class Product
+        { 
+            private int $productID;
+            private string $productName;
+            private string $productImagePath;
+            private float $price;
+            private int $stock;
+
+            function __construct(int $productID, string $productName, float $price, int $stock)
+            {
+                $this->productID = $productID;
+                $this->productName = $productName;
+                $this->price = $price;
+                $this->stock = $stock;
+                $this->addProductImagePath("/productImages/" . $this->productID);
+            }
+
+            function addProductImagePath(string $image)
+            {
+                $this->productImagePath = $image;
+            }
+
+            function adjustPrice(float $amount)
+            {
+                $this->price = $amount;
+            }
+
+            function getID()
+            {
+                return $this->productID;
+            }
+
+            function getName()
+            {
+                return $this->productName;
+            }
+
+            function getImagePath()
+            {
+                return $this->productImagePath;
+            }
+
+            function getPrice()
+            {
+                return $this->price;
+            }
+
+            function getStock()
+            {
+                return $this->stock;
+            }
+
+            function getSpan()
+            {
+                echo '<span class="productSpan" >
+                        <img class="productImage" src="'.$this->productImagePath.'.jpeg"/>
+                        <span class="productDetails">
+                            <p id="productName">' . $this->productName . '</p>
+                            <p id="productPrice">&pound;' . number_format($this->price, 2) . '</p> 
+                        </span> 
+                        <button class="uiButton" id="addShoe1Basket">Add To Basket</button>
+                    </span>';
+            }
+                }
+        
+?>
+
 <!DOCTYPE html>
 <html>
 <head>
@@ -7,7 +83,7 @@
     
 </head>
 <body>
-
+    
     <!--https://www.w3schools.com/howto/howto_css_modals.asp-->
      
 
@@ -55,37 +131,40 @@
                 <div class="panel">
                     <div class="products">
                         
-                        <span class="productSpan" >
-                                <img class="productImage" id="shoe1Image"/>
-                                <span class="productDetails" id="shoe1Details">
-                                <p id="productName">Product Name</p>
-                                <p id="productPrice">Product Price</p>
-                            </span>
-                            <button class="uiButton" id="addShoe1Basket">Add To Basket</button>
-                        </span>
+                        <?php    
+                        
+                            $sqlComm = "SELECT * FROM tblProduct";
+                            $sqlReturn = $sqlConnection->query($sqlComm);
+
+                            if($sqlReturn->num_rows > 0)
+                            {
+                                while($row = $sqlReturn->fetch_assoc())
+                                {
+                                    $item = new Product($row["productID"], $row["productName"], $row["price"], $row["stock"]);                        
+                                    $item->getSpan(); 
+                                }
+                            }                                
+                            
+                        ?>
                         
                     </div>
                 </div>
 
                 <button class="accordion">Protective Wear</button>
                 <div class="panel">
-                    <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.</p>
-                </div>
+                    </div>
 
                 <button class="accordion">Clothes</button>
                 <div class="panel">
-                    <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.</p>
-                </div>
+                    < </div>
 
                 <button class="accordion">Electronics</button>
                 <div class="panel">
-                    <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.</p>
-                </div>
+                    </div>
 
-                <button class="accordion">Headwear</button>
+                <button class="accordion">Headgear</button>
                 <div class="panel">
-                    <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.</p>
-                </div>
+                     </div>
             </div>
         </div>
 

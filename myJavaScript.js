@@ -25,11 +25,16 @@ var modalProductDetails = document.getElementById("modalProductDetails");
 // Get the modal
 var modalShoppingBasket = document.getElementById("modalShoppingBasket");
 
-// Get the image that opens a modal
-var itemImage = document.getElementById("shoe1Image");
+Array.from(document.getElementsByClassName("productImage")).foreach(addOnClick);
+Array.from(document.getElementsByClassName("productDetails")).foreach(addOnClick);
 
-// Get the span that opens a modal
-var itemDetails = document.getElementById("shoe1Details");
+function addOnClick(item)
+{
+    item.onclick = function () {
+
+        modalProductDetails.style.display = "block";
+    }
+}
 
 // Get the anchor tag that opens a modal
 var shoppingBasket = document.getElementById("shoppingBasketLink");
@@ -40,17 +45,6 @@ var span1 = document.getElementsByClassName("close")[0];
 // Get the <span> element that closes the modal
 var span2 = document.getElementsByClassName("close")[1];
 
-// When the user clicks on the button, open the modal
-itemDetails.onclick = function () {
-
-    modalProductDetails.style.display = "block";
-}
-
-// When the user clicks on the button, open the modal
-itemImage.onclick = function () {
-    
-    modalProductDetails.style.display = "block";
-}
 
 shoppingBasket.onclick = function () {
 

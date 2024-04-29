@@ -123,18 +123,18 @@ footer {
     height:fit-content;
     margin:1em;
     display:flex;
-    justify-content:space-evenly;
     flex-wrap:wrap;
     flex-direction:row;
 }
 
 .productSpan {
     width: 15em;
-    height: 16em;
-    padding: 2em;
+    height: 17em;
+    padding: 1em;
     display: inline-block;
     align-content: space-between;
     background-color: #BDE3FF;
+    margin: 0.3em;
 }
 
 .productImage {
