@@ -7,19 +7,42 @@
     
 </head>
 <body>
+
+    <!--https://www.w3schools.com/howto/howto_css_modals.asp-->
+     
+
+    <!-- The Modal -->
+    <div id="modalProductDetails" class="modal">
+        
+        <?php
+        include 'productDetailModal.html';
+        ?>
+         
+    </div>
+
+    <!-- The Modal -->
+    <div id="modalShoppingBasket" class="modal">
+        
+        <?php
+        include 'shoppingBasketModal.html';
+        ?>
+         
+    </div>
+<!------------------------------------------------------>
+
     <div id="navBar">
         <div id="adminUserName">
 
         </div>
         <div id="adminLogin">
-            <a href="adminLogin.html">Admin Login</a>
+            <a href="adminLogin.php">Admin Login</a>
         </div>
     </div>
 
 
     <img id="logoImage" src="gazelleLogo.jpeg" />
     <h1 id="header">Product Catalogue</h1>
-    <a id="shoppingBasketLink" href="#shoppingBasketModal">
+    <a id="shoppingBasketLink">
         <img id="shoppingBasket" src="shoppingBasket.png" />
     </a>
 
@@ -31,6 +54,15 @@
                 <button class="accordion">Shoes</button>
                 <div class="panel">
                     <div class="products">
+                        
+                        <span class="productSpan" >
+                                <img class="productImage" id="shoe1Image"/>
+                                <span class="productDetails" id="shoe1Details">
+                                <p id="productName">Product Name</p>
+                                <p id="productPrice">Product Price</p>
+                            </span>
+                            <button class="uiButton" id="addShoe1Basket">Add To Basket</button>
+                        </span>
                         
                     </div>
                 </div>
