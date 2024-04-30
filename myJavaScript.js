@@ -25,15 +25,15 @@ var modalProductDetails = document.getElementById("modalProductDetails");
 // Get the modal
 var modalShoppingBasket = document.getElementById("modalShoppingBasket");
 
-Array.from(document.getElementsByClassName("productImage")).foreach(addOnClick);
-Array.from(document.getElementsByClassName("productDetails")).foreach(addOnClick);
+var productImages = document.getElementsByClassName("productImage");
+var productSpans = document.getElementsByClassName("productDetails");
 
-function addOnClick(item)
-{
-    item.onclick = function () {
+for(var i=0;i<productImages.length;i++){
+    productImages[i].onclick = openProductModal;
+}
 
-        modalProductDetails.style.display = "block";
-    }
+for(var i=0;i<productSpans.length;i++){
+    productSpans[i].onclick = openProductModal;
 }
 
 // Get the anchor tag that opens a modal
@@ -70,6 +70,11 @@ window.onclick = function (event) {
 }
 
 /*****************************************/
+
+function openProductModal()
+{
+    modalProductDetails.style.display = "block";
+}
 
 function closeModal() {
     modalProductDetails.style.display = "none";

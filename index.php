@@ -1,6 +1,8 @@
 <?php
         namespace gazelleRunningSupplies;
+        use ArrayObject;
         use mysqli;
+        
         
         $sqlServer = "localhost";
         $database = "gazellerunningsupplies";
@@ -14,13 +16,15 @@
             private string $productImagePath;
             private float $price;
             private int $stock;
+            private string $category;
 
-            function __construct(int $productID, string $productName, float $price, int $stock)
+            function __construct(int $productID, string $productName, float $price, int $stock, string $category)
             {
                 $this->productID = $productID;
                 $this->productName = $productName;
                 $this->price = $price;
                 $this->stock = $stock;
+                $this->category = $category;
                 $this->addProductImagePath("/productImages/" . $this->productID);
             }
 
@@ -59,6 +63,11 @@
                 return $this->stock;
             }
 
+            function getCategory()
+            {
+                return $this->category;
+            }
+
             function getSpan()
             {
                 echo '<span class="productSpan" >
@@ -67,11 +76,24 @@
                             <p id="productName">' . $this->productName . '</p>
                             <p id="productPrice">&pound;' . number_format($this->price, 2) . '</p> 
                         </span> 
-                        <button class="uiButton" id="addShoe1Basket">Add To Basket</button>
+                        <button class="uiButton" id="addToBasket('.$this->productID.')">Add To Basket</button>
                     </span>';
             }
-                }
-        
+        }
+     
+        $allProducts = new ArrayObject;
+                
+        $sqlComm = "SELECT * FROM tblProduct WHERE category='Shoes'";
+        $sqlReturn = $sqlConnection->query($sqlComm);
+
+        if($sqlReturn->num_rows > 0)
+        {
+            while($row = $sqlReturn->fetch_assoc())
+            {
+                $item = new Product($row["productID"], $row["productName"], $row["price"], $row["stock"], $row["category"]);                                                                         
+                $allProducts->append($item);                
+            }
+        }      
 ?>
 
 <!DOCTYPE html>
@@ -131,19 +153,15 @@
                 <div class="panel">
                     <div class="products">
                         
-                        <?php    
-                        
-                            $sqlComm = "SELECT * FROM tblProduct";
-                            $sqlReturn = $sqlConnection->query($sqlComm);
+                        <?php  
 
-                            if($sqlReturn->num_rows > 0)
+                            foreach($allProducts as $item)
                             {
-                                while($row = $sqlReturn->fetch_assoc())
+                                if($item->getCategory() == "Shoes")
                                 {
-                                    $item = new Product($row["productID"], $row["productName"], $row["price"], $row["stock"]);                        
-                                    $item->getSpan(); 
+                                $item->getSpan();
                                 }
-                            }                                
+                            }                               
                             
                         ?>
                         
@@ -152,18 +170,22 @@
 
                 <button class="accordion">Protective Wear</button>
                 <div class="panel">
+               
                     </div>
 
                 <button class="accordion">Clothes</button>
                 <div class="panel">
-                    < </div>
+                
+                    </div>
 
                 <button class="accordion">Electronics</button>
                 <div class="panel">
+                
                     </div>
 
                 <button class="accordion">Headgear</button>
                 <div class="panel">
+                
                      </div>
             </div>
         </div>
