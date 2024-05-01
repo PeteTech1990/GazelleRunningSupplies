@@ -588,3 +588,18 @@ footer {
     min-height: 80vh;
 
 }
+
+#shoppingBasketCloseButton {
+
+color: #aaa;
+    float: right;
+    font-size: 28px;
+    font-weight: bold;
+}
+
+    #shoppingBasketCloseButton:hover,
+    #shoppingBasketCloseButton:focus {
+        color: black;
+        text-decoration: none;
+        cursor: pointer;
+    }

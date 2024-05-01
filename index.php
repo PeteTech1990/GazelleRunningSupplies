@@ -21,7 +21,7 @@
                 
             }
 
-            function getAllProducts()
+            function retrieveAllProducts()
             {
                 $sqlComm = "SELECT * FROM tblProduct";
                 $sqlReturn = $this->sqlConnection->query($sqlComm);
@@ -30,10 +30,15 @@
                 {
                     while($row = $sqlReturn->fetch_assoc())
                     {
-                        $item = new Product($row["productID"], $row["productName"], $row["price"], $row["stock"], $row["category"]);                                                                         
+                        $item = new Product($row["productID"], $row["productName"], $row["price"], $row["stock"], $row["category"], $row["description"]);                                                                         
                         $this->allProducts[] = $item;                
                     }
                 }  
+            }
+
+            function getAllProducts()
+            {
+                return $this->allProducts;
             }
 
             function getProduct(int $productID)
@@ -171,13 +176,16 @@
             private int $stock;
             private string $category;
 
-            function __construct(int $productID, string $productName, float $price, int $stock, string $category)
+            private string $description;
+
+            function __construct(int $productID, string $productName, float $price, int $stock, string $category, string $description)
             {
                 $this->productID = $productID;
                 $this->productName = $productName;
                 $this->price = $price;
                 $this->stock = $stock;
                 $this->category = $category;
+                $this->description = $description;
                 $this->addProductImagePath("/productImages/" . $this->productID);
             }
 
@@ -223,8 +231,8 @@
 
             function getSpan()
             {
-                echo '<span class="productSpan" >
-                        <img class="productImage" src="'.$this->productImagePath.'.jpeg"/>
+                echo '<span id=productDetails'.$this->productID.' class="productSpan" >
+                        <img onclick="openProductModal('.$this->productID.')" id=productImage'.$this->productID.' class="productImage" src="'.$this->productImagePath.'.jpeg"/>
                         <span class="productDetails">
                             <p id="productName">' . $this->productName . '</p>
                             <p id="productPrice">&pound;' . number_format($this->price, 2) . '</p> 
@@ -234,6 +242,25 @@
                             <input type="submit" class="uiButton" value="Add to Basket"/>
                         </form>
                     </span>';
+            }
+
+            function getDetailDiv()
+            {
+                echo '<div id='.$this->productID.' class="modal modalProductDetails">
+                <div class="modal-content-product">
+                <span onclick="closeProductModal('.$this->productID.')" id="modalClose'.$this->productID.'" class="close">&times;</span>
+                <img class="productImageModal" src="'.$this->productImagePath.'.jpeg"/>
+                <div class="modalInner">
+                    <h2>'. $this->productName .'</h2>
+                    <p>'. $this->description .'</p>
+                    <p>&pound;'. number_format($this->price, 2) .'</p>
+                </div>
+                <form method="post" action="index.php?action=addToBasket">
+                            <input type="hidden" name="productID" value="'.$this->productID.'"/>
+                            <input type="submit" class="uiButton" value="Add to Basket"/>
+                        </form>
+                </div>
+                </div>';
             }
         }
      
@@ -302,7 +329,6 @@
 
             function getDiv()
             {
-                
 
                 echo '<div class="basketItem" >
                         <p class="basketProductName">'.$this->product->getName().'</p>
@@ -325,7 +351,7 @@
         }
         
         $dbConnect = new dbConnect;
-        $dbConnect->getAllProducts();
+        $dbConnect->retrieveAllProducts();
         session_start();
         
         //https://phppot.com/php/simple-php-shopping-cart/
@@ -348,7 +374,7 @@
 
         //https://stackoverflow.com/questions/44887880/store-object-in-php-session
 
-        if($_SESSION["basketID"] == null)
+        if(!isset($_SESSION["basketID"]))
         {            
             $_SESSION["basketID"] = $dbConnect->createBasket();
         }
@@ -374,19 +400,21 @@
      
 
     <!-- The Modal -->
-    <div id="modalProductDetails" class="modal">
+    
         
-        <?php
-        include 'productDetailModal.html';
+        <?php 
+            foreach($dbConnect->getAllProducts() as $product)
+            {
+                $product->getDetailDiv();
+            }       
         ?>
          
-    </div>
     
     <!-- The Modal -->
     <div id="modalShoppingBasket" class="modal">
         
         <div class="modal-content-basket">
-            <span class="close">&times;</span>
+            <span id="shoppingBasketCloseButton">&times;</span>
             <h2>Your Shopping Basket</h2>
             <div class="modalInner" class="basketItems">
                 <?php 
