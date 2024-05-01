@@ -126,6 +126,17 @@
                 }
             }
 
+            function destroyBasket()
+            {
+                $basketID = $_SESSION["basketID"];
+                $sqlComm = "DELETE FROM tblBasketItem WHERE basketID='$basketID'";
+                
+                $this->sqlConnection->query($sqlComm);
+                $sqlComm = "DELETE FROM tblBasket WHERE basketID='$basketID'";
+                
+                $this->sqlConnection->query($sqlComm);
+            }
+
             function InstantiateAndPopulateBasket()
             {
                 $basketID = $_SESSION["basketID"];
@@ -357,20 +368,25 @@
         //https://phppot.com/php/simple-php-shopping-cart/
         if(!empty($_GET["action"]))
         {
-        switch($_GET["action"])
-        {
-            case "addToBasket":
-                $dbConnect->addToBasket($_POST["productID"]);                
-                break;
-            case "removeFromBasket":
-                $dbConnect->removeFromBasket($_POST["basketItemID"]);
-                break;
-            case "changeBasketQuantity":
-                $dbConnect->updateBasket($_POST["basketItemID"], $_POST["quantity"]);
-                break;
+            switch($_GET["action"])
+            {
+                case "addToBasket":
+                    $dbConnect->addToBasket($_POST["productID"]);                
+                    break;
+                case "removeFromBasket":
+                    $dbConnect->removeFromBasket($_POST["basketItemID"]);
+                    break;
+                case "changeBasketQuantity":
+                    $dbConnect->updateBasket($_POST["basketItemID"], $_POST["quantity"]);
+                    break;
+                case "cancel":
+                    $dbConnect->destroyBasket();
+                    session_destroy();
+                    session_start();
+                    $_SESSION["basketID"] = $dbConnect->createBasket();
 
+            }
         }
-    }
 
         //https://stackoverflow.com/questions/44887880/store-object-in-php-session
 
@@ -418,22 +434,29 @@
             <h2>Your Shopping Basket</h2>
             <div class="modalInner" class="basketItems">
                 <?php 
-                   
-                    if($dbConnect->getBasket()->getAllItems() != null)
-                    {
-                        foreach($dbConnect->getBasket()->getAllItems() as $basketItem)
+                   if($dbConnect->getBasket() != null)
+                   {
+                        if($dbConnect->getBasket()->getAllItems() != null)
                         {
-                            $basketItem->getDiv();
+                            foreach($dbConnect->getBasket()->getAllItems() as $basketItem)
+                            {
+                                $basketItem->getDiv();
+                            }
                         }
-                    }
+                    }   
                 ?>
             </div>
             <span class="basketTotal">
                 <h2>Basket Total</h2>
                 <?php $dbConnect->getBasketTotal()?>
             </span>            
-                
-            <button class="uiButton" onclick="launchOrderForm()">Proceed To Order Form</button>
+             
+            <?php
+            if($dbConnect->getBasket()->getAllItems() != null)
+            {
+                echo ' <button class="uiButton" onclick="launchOrderForm()">Proceed To Order Form</button>';
+            }           
+            ?>
         </div>
          
     </div>

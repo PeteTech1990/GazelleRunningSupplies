@@ -1,3 +1,243 @@
+<?php
+        namespace gazelleRunningSupplies;
+        use mysqli;
+        session_start();
+
+        
+
+        class dbConnect
+        {       
+
+            public object $sqlConnection;
+            var $allProducts;
+            var $basket;
+
+            var $failLoginMessage;
+
+            function __construct()
+            {
+                $sqlServer = "localhost";
+                $database = "gazellerunningsupplies";
+                $this->allProducts = array();
+
+                $this->sqlConnection = new mysqli($sqlServer, "sa", "sa", $database);
+                
+            }
+
+            function retrieveAllProducts()
+            {
+                $sqlComm = "SELECT * FROM tblProduct";
+                $sqlReturn = $this->sqlConnection->query($sqlComm);
+    
+                if($sqlReturn->num_rows > 0)
+                {
+                    while($row = $sqlReturn->fetch_assoc())
+                    {
+                        $item = new Product($row["productID"], $row["productName"], $row["price"], $row["stock"], $row["category"], $row["description"]);                                                                         
+                        $this->allProducts[] = $item;                
+                    }
+                }  
+            }
+
+            function getAllProducts()
+            {
+                return $this->allProducts;
+            }
+
+            function getProduct(int $productID)
+            {
+                foreach($this->allProducts as $product)
+                {
+                    if($product->getID() == $productID)
+                    {
+                        return $product;
+                    }
+                }
+            }
+
+            function createBasket()
+            {
+                $dateCreated = date("Y/m/d");
+                $sqlComm = "INSERT INTO tblBasket (dateCreated) VALUES ('.$dateCreated.')";
+                $sqlReturn = $this->sqlConnection->query($sqlComm);
+    
+                $basketID = mysqli_insert_id($this->sqlConnection);
+
+                return $basketID;
+            }
+                
+            function addToBasket(int $productID)
+            {
+                $basketID = $_SESSION["basketID"];
+                $productExist = false;
+                $currentQuantity = 0;
+                $currentBasketItemID = 0;
+
+                $sqlComm = "SELECT * FROM tblBasketItem WHERE basketID='.$basketID.'";
+                $sqlReturn = $this->sqlConnection->query($sqlComm);
+    
+                if($sqlReturn->num_rows > 0)
+                {
+                    while($row = $sqlReturn->fetch_assoc())
+                    {
+                        if($row["productID"] == $productID)
+                        {
+                            $productExist = true;
+                            $currentQuantity = (int)$row["quantity"];
+                            $currentBasketItemID = $row["basketItemID"];
+                        }              
+                    }
+                }                
+
+                if($productExist)
+                {
+                    $newQuantity = ($currentQuantity + 1);
+
+                    $sqlComm = "UPDATE tblBasketItem SET quantity='$newQuantity' WHERE basketItemID='$currentBasketItemID'";
+                    $this->sqlConnection->query($sqlComm);
+                    
+                    
+                }
+                else
+                {
+                    $sqlComm = "INSERT INTO tblBasketItem (productID, quantity, basketID) VALUES ('.$productID.', 1, '.$basketID.')";
+               
+                    $this->sqlConnection->query($sqlComm);
+
+                }
+ 
+            }
+
+            function removeFromBasket(int $basketItemID)
+            {
+                $sqlComm = "DELETE FROM tblBasketItem WHERE basketItemID='$basketItemID'";
+                
+                $this->sqlConnection->query($sqlComm);
+            }
+
+            function updateBasket(int $basketItemID, int $quantity)
+            {
+                if($quantity < 1)
+                {
+                    $this->removeFromBasket($basketItemID);
+                }
+                else
+                {
+                    $sqlComm = "UPDATE tblBasketItem SET quantity='$quantity' WHERE basketItemID='$basketItemID'";
+                
+                    $this->sqlConnection->query($sqlComm);
+                }
+            }
+
+            function destroyBasket()
+            {
+                $basketID = $_SESSION["basketID"];
+                $sqlComm = "DELETE FROM tblBasketItem WHERE basketID='$basketID'";
+                
+                $this->sqlConnection->query($sqlComm);
+                $sqlComm = "DELETE FROM tblBasket WHERE basketID='$basketID'";
+                
+                $this->sqlConnection->query($sqlComm);
+            }
+
+            function InstantiateAndPopulateBasket()
+            {
+                $basketID = $_SESSION["basketID"];
+                $this->basket = new Basket($basketID);
+
+                $sqlComm = "SELECT * FROM tblBasketItem WHERE basketID='.$basketID.'";
+                $sqlReturn = $this->sqlConnection->query($sqlComm);
+    
+                if($sqlReturn->num_rows > 0)
+                {
+                    while($row = $sqlReturn->fetch_assoc())
+                    {
+                        $product = $this->getProduct($row["productID"]);
+                        $newBasketItem = new basketItem($row["basketItemID"],$product , $row["quantity"]);
+                        $this->basket->addProductToBasket($newBasketItem);               
+                    }
+                }                
+                
+            }
+
+            function getBasketTotal()
+            {
+                $total = 0;
+
+                if($this->basket->getAllItems() != null)
+                {
+                    foreach($this->basket->getAllItems() as $basketItem)
+                    {
+                        $total += $basketItem->getProduct()->getPrice()*$basketItem->getQuantity();
+                    }
+                }
+
+                echo '<h2>&pound;'.number_format($total, 2).'</h2>';
+            }
+
+            function getBasket()
+            {
+                return $this->basket;
+            }
+
+            function authenticateUser()
+            {
+                $username = $_POST["txtUsername"];
+                $sqlComm = "SELECT * FROM tblUser WHERE username='$username'";
+                $sqlReturn = $this->sqlConnection->query($sqlComm);
+    
+                if($sqlReturn->num_rows > 0)
+                {
+                    while($row = $sqlReturn->fetch_assoc())
+                    {
+                        if($row["password"] == $_POST["txtPassword"])
+                        {
+                            $_SESSION["userID"] == $row["userID"];
+                            return true;
+                        }
+                        else
+                        {
+                            $this->failLoginMessage = "Password incorrect, please try again";
+                        }             
+                    }
+                }
+                else
+                {
+                    $this->failLoginMessage = "Username unknown, please try again";
+                }   
+            }
+
+            function printLoginFailMessage()
+            {
+                if($this->failLoginMessage != null)
+                {
+                    echo '<p id="loginFailMessage">'.$this->failLoginMessage.'</p>';
+                }
+            }
+        }
+
+        
+        
+        $dbConnect = new dbConnect;        
+        
+        
+        //https://phppot.com/php/simple-php-shopping-cart/
+        if(!empty($_GET["action"]))
+        {
+            switch($_GET["action"])
+            {
+                case "authCheck":
+                    if($dbConnect->authenticateUser()){header("Location: adminOrders.php");}                
+                    break;                
+            }
+        }
+
+
+        
+
+        
+?>
+
 <!DOCTYPE html>
 <html>
 <head>
@@ -25,10 +265,11 @@
     <div id="mainContent">        
         
         <div id="userDetails">
+            <?php $dbConnect->printLoginFailMessage() ?>
             <h2>Enter your username and password</h2>
-            <form id="userDetailsForm" method="post" action="adminOrders.php">
-                <span class="inputAreasLogin" id="usernameInput"><label for="txtUsername">Username: </label><input id="txtUsername" required/></span>
-                <span class="inputAreasLogin" id="passwordInput"><label for="txtPassword">Password:   </label><input id="txtPassword" required/></span>                
+            <form id="userDetailsForm" method="post" action="adminLogin.php?action=authCheck">
+                <span class="inputAreasLogin" id="usernameInput"><label for="txtUsername">Username: </label><input name="txtUsername" required/></span>
+                <span class="inputAreasLogin" id="passwordInput"><label for="txtPassword">Password:   </label><input name="txtPassword" required/></span>                
                 <input type="submit" name="Login"  class="uiButton"/>
             </form>
             

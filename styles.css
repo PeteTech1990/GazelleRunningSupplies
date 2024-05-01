@@ -272,7 +272,7 @@ footer {
 }
 
 #invoiceDetails {
-    height: 110vh;
+    height: fit-content;
     width: 90vw;
     padding: 3em;
     background-color: #97DEC9;
@@ -368,6 +368,10 @@ footer {
     flex-direction: column;
     align-content: flex-start;
     align-items: center;
+}
+
+#loginFailMessage{
+    color:#FF0000;
 }
 
 #adminTabs {
