@@ -20,29 +20,18 @@ for (i = 0; i < acc.length; i++) {
 
 
 
-// Get the modal
-var modalShoppingBasket = document.getElementById("modalShoppingBasket");
+//Shopping Basket
 
 /**https://www.w3schools.com/howto/howto_css_modals.asp**/
-// Get the modal
-var modalProductDetails = document.getElementsByClassName("modalProductDetails");
+
+
 var closeButtons = document.getElementsByClassName("close");
-
-// for(var i=0;i<modalProductDetails.length;i++)
-// {
-//     var modalID = modalProductDetails[i].id;
-//     var productImage = document.getElementById("productImage" + modalID);
-//     // productImage.onclick = function(event) {        
-//     //     var productDetailModal = document.getElementById(event.target.id);
-//     //     productDetailModal.style.display = "block";
-//     // };
-//     // var productSpan = document.getElementById("productDetails" + modalID);
-//     // productSpan.onclick = function() {openProductModal();};
-//     // var modalClose = document.getElementById("modalClose" + modalID);
-//     // modalClose.onclick = function() {closeModal();};
-// }
-
 var shoppingBasketModal = document.getElementById("modalShoppingBasket");
+
+
+
+// Get the modal
+var modalShoppingBasket = document.getElementById("modalShoppingBasket");
 
 // Get the anchor tag that opens a modal
 var shoppingBasket = document.getElementById("shoppingBasketLink");
@@ -59,6 +48,12 @@ shoppingBasket.onclick = function () {
 shoppingBasketClose.onclick = function () {
     modalShoppingBasket.style.display = "none";
 }
+
+
+
+//Window Click
+
+var modalProductDetails = document.getElementsByClassName("modalProductDetails");
 
 // When the user clicks anywhere outside of the modal, close it
 window.onclick = function (event) {
@@ -79,6 +74,8 @@ window.onclick = function (event) {
 
 /*****************************************/
 
+//Product Modal functions
+
 function openProductModal(modalID)
 {    
     var productDetailModal = document.getElementById(modalID);
@@ -91,10 +88,9 @@ function closeProductModal(modalID) {
     productDetailModal.style.display = "none";
 }
 
+
+//Navigation
+
 function launchOrderForm() {
     window.location.replace("orderForm.php");
-}
-
-function launchInvoice() {
-    window.location.replace("invoice.php");
 }
