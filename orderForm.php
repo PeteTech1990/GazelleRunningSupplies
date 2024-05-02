@@ -1,7 +1,7 @@
 <?php
         namespace gazelleRunningSupplies;
         use mysqli;
-
+        
         
 
         class dbConnect
@@ -51,87 +51,15 @@
                     }
                 }
             }
-
-            function createBasket()
-            {
-                $dateCreated = date("Y/m/d");
-                $sqlComm = "INSERT INTO tblBasket (dateCreated) VALUES ('.$dateCreated.')";
-                $sqlReturn = $this->sqlConnection->query($sqlComm);
-    
-                $basketID = mysqli_insert_id($this->sqlConnection);
-
-                return $basketID;
-            }
+            
                 
-            function addToBasket(int $productID)
-            {
-                $basketID = $_SESSION["basketID"];
-                $productExist = false;
-                $currentQuantity = 0;
-                $currentBasketItemID = 0;
-
-                $sqlComm = "SELECT * FROM tblBasketItem WHERE basketID='.$basketID.'";
-                $sqlReturn = $this->sqlConnection->query($sqlComm);
-    
-                if($sqlReturn->num_rows > 0)
-                {
-                    while($row = $sqlReturn->fetch_assoc())
-                    {
-                        if($row["productID"] == $productID)
-                        {
-                            $productExist = true;
-                            $currentQuantity = (int)$row["quantity"];
-                            $currentBasketItemID = $row["basketItemID"];
-                        }              
-                    }
-                }                
-
-                if($productExist)
-                {
-                    $newQuantity = ($currentQuantity + 1);
-
-                    $sqlComm = "UPDATE tblBasketItem SET quantity='$newQuantity' WHERE basketItemID='$currentBasketItemID'";
-                    $this->sqlConnection->query($sqlComm);
-                    
-                    
-                }
-                else
-                {
-                    $sqlComm = "INSERT INTO tblBasketItem (productID, quantity, basketID) VALUES ('.$productID.', 1, '.$basketID.')";
-               
-                    $this->sqlConnection->query($sqlComm);
-
-                }
- 
-            }
-
-            function removeFromBasket(int $basketItemID)
-            {
-                $sqlComm = "DELETE FROM tblBasketItem WHERE basketItemID='$basketItemID'";
-                
-                $this->sqlConnection->query($sqlComm);
-            }
-
-            function updateBasket(int $basketItemID, int $quantity)
-            {
-                if($quantity < 1)
-                {
-                    $this->removeFromBasket($basketItemID);
-                }
-                else
-                {
-                    $sqlComm = "UPDATE tblBasketItem SET quantity='$quantity' WHERE basketItemID='$basketItemID'";
-                
-                    $this->sqlConnection->query($sqlComm);
-                }
-            }
 
             function InstantiateAndPopulateBasket()
             {
                 $basketID = $_SESSION["basketID"];
                 $this->basket = new Basket($basketID);
 
-                $sqlComm = "SELECT * FROM tblBasketItem WHERE basketID='.$basketID.'";
+                $sqlComm = "SELECT * FROM tblBasketItem WHERE basketID='$basketID'";
                 $sqlReturn = $this->sqlConnection->query($sqlComm);
     
                 if($sqlReturn->num_rows > 0)

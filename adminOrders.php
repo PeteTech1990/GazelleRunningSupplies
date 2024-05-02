@@ -4,7 +4,7 @@
 use DateTime;
 use mysqli;
 
-session_start();
+
 
         
 
@@ -15,16 +15,16 @@ session_start();
             var $allProducts;
             var $basket;
 
-            var $customer;
+            var $allOrders;
 
-            var $order;
+            var $displayedOrder;
 
             function __construct()
             {
                 $sqlServer = "localhost";
                 $database = "gazellerunningsupplies";
                 $this->allProducts = array();
-
+                $this->allOrders = array();
                 $this->sqlConnection = new mysqli($sqlServer, "sa", "sa", $database);
                 
             }
@@ -44,9 +44,32 @@ session_start();
                 }  
             }
 
+            function retrieveFilteredOrders()
+            {
+                $dateFrom = $_SESSION["dateFrom"];
+                $dateTo = $_SESSION["dateTo"];
+                $sqlComm = "SELECT * FROM tblOrder WHERE orderDate BETWEEN '$dateFrom' AND '$dateTo' ORDER BY orderDate DESC";
+                $sqlReturn = $this->sqlConnection->query($sqlComm);
+    
+                if($sqlReturn->num_rows > 0)
+                {
+                    while($row = $sqlReturn->fetch_assoc())
+                    {
+                        $item = new Order($row["orderID"], $row["orderDate"], $row["customerID"]); 
+                        $this->GetOrderDetail($item);                                                                        
+                        $this->allOrders[] = $item;                
+                    }
+                }  
+            }
+
             function getAllProducts()
             {
                 return $this->allProducts;
+            }
+
+            function getAllOrders()
+            {
+                return $this->allOrders;
             }
 
             function getProduct(int $productID)
@@ -62,8 +85,8 @@ session_start();
 
             function createBasket()
             {
-                $dateCreated = date("Y/m/d");
-                $sqlComm = "INSERT INTO tblBasket (dateCreated) VALUES ('.$dateCreated.')";
+                $dateCreated = date("Y-m-d");
+                $sqlComm = "INSERT INTO tblBasket (dateCreated) VALUES ('$dateCreated')";
                 $sqlReturn = $this->sqlConnection->query($sqlComm);
     
                 $basketID = mysqli_insert_id($this->sqlConnection);
@@ -78,7 +101,7 @@ session_start();
                 $currentQuantity = 0;
                 $currentBasketItemID = 0;
 
-                $sqlComm = "SELECT * FROM tblBasketItem WHERE basketID='.$basketID.'";
+                $sqlComm = "SELECT * FROM tblBasketItem WHERE basketID='$basketID'";
                 $sqlReturn = $this->sqlConnection->query($sqlComm);
     
                 if($sqlReturn->num_rows > 0)
@@ -105,7 +128,7 @@ session_start();
                 }
                 else
                 {
-                    $sqlComm = "INSERT INTO tblBasketItem (productID, quantity, basketID) VALUES ('.$productID.', 1, '.$basketID.')";
+                    $sqlComm = "INSERT INTO tblBasketItem (productID, quantity, basketID) VALUES ('$productID', 1, '$basketID')";
                
                     $this->sqlConnection->query($sqlComm);
 
@@ -150,7 +173,7 @@ session_start();
                 $basketID = $_SESSION["basketID"];
                 $this->basket = new Basket($basketID);
 
-                $sqlComm = "SELECT * FROM tblBasketItem WHERE basketID='.$basketID.'";
+                $sqlComm = "SELECT * FROM tblBasketItem WHERE basketID='$basketID'";
                 $sqlReturn = $this->sqlConnection->query($sqlComm);
     
                 if($sqlReturn->num_rows > 0)
@@ -180,19 +203,19 @@ session_start();
                 echo '<h2>&pound;'.number_format($total, 2).'</h2>';
             }
 
-            function getOrderTotal()
+            function getOrderTotal(Order $order)
             {
                 $total = 0;
 
-                if($this->order->getAllItems() != null)
+                if($order->getAllItems() != null)
                 {
-                    foreach($this->order->getAllItems() as $orderItem)
+                    foreach($order->getAllItems() as $orderItem)
                     {
                         $total += $orderItem->getProduct()->getPrice()*$orderItem->getQuantity();
                     }
                 }
 
-                echo '<h2>&pound;'.number_format($total, 2).'</h2>';
+                return number_format($total, 2);
             }
 
             function getBasket()
@@ -222,49 +245,94 @@ session_start();
                 $this->customer = new Customer($customerID, $customerName, $customerAdd1, $customerAdd2, $customerCity, $customerCounty, $customerPostcode, $customerNumber, $customerEmail);
             }
 
-            function createOrder()
-            {
-                $dateCreated =  strtotime("Y/m/d");
-                $customerID = $this->customer->getID();
-                $sqlComm = "INSERT INTO tblOrder (orderDate, customerID) VALUES ('.$dateCreated.', '.$customerID.')";
-                $sqlReturn = $this->sqlConnection->query($sqlComm);
-    
-                $orderID = mysqli_insert_id($this->sqlConnection);
-
-                $this->order = new Order($orderID, $dateCreated);
-
-                if($this->basket->getAllItems() != null)
+            
+                function getCustomer(string $request, int $customerID)
                 {
-                    foreach($this->basket->getAllItems() as $basketItem)
+                    
+                    $customer = null;
+
+                    switch($request)
                     {
-                        $productID = $basketItem->GetProduct()->GetID();
-                        $quantity = $basketItem->GetQuantity();
-
-                        $sqlComm = "INSERT INTO tblOrderDetail (productID, quantity, orderID) VALUES ('$productID', '$quantity', '.$orderID.')";
-                        $sqlReturn = $this->sqlConnection->query($sqlComm);
+                        case "nameOnly":
+                            $sqlComm = "SELECT customerName FROM tblcustomer WHERE customerID='$customerID'";
+                            $sqlReturn = $this->sqlConnection->query($sqlComm);
     
-                        $orderDetailID = mysqli_insert_id($this->sqlConnection);
-
-                        $this->order->addDetail(new orderDetail($orderDetailID, $basketItem->getProduct(), $basketItem->getQuantity()));
+                            if($sqlReturn->num_rows > 0)
+                            {
+                                while($row = $sqlReturn->fetch_assoc())
+                                {
+                                    $customer = $row["customerName"];               
+                                }
+                            }  
+                            break;  
+                        case "fullDetail":
+                            $sqlComm = "SELECT * FROM tblcustomer WHERE customerID='$customerID'";
+                            $sqlReturn = $this->sqlConnection->query($sqlComm);
+    
+                            if($sqlReturn->num_rows > 0)
+                            {
+                                while($row = $sqlReturn->fetch_assoc())
+                                {
+                                    $customer = new Customer($customerID, $row["customerName"], $row["addressLine1"], $row["addressLine2"], $row["city"], $row["county"], $row["postcode"], $row["contactNumber"], $row["emailAddress"]);               
+                                }
+                            }
+                            break; 
                     }
+
+                    return $customer;
                 }
 
+            
+
+            function checkAuthAndPrintLoggedInUser()
+            {
+                if(isset($_SESSION["userID"]))
+                {
+                    $userID = $_SESSION["userID"];
+                    $sqlComm = "SELECT displayName FROM tblUser WHERE userID='$userID'";
+                    $sqlReturn = $this->sqlConnection->query($sqlComm);
+
+                    if($sqlReturn->num_rows > 0)
+                    {
+                        while($row = $sqlReturn->fetch_assoc())
+                        {
+                            echo '<p>'.$row["displayName"].' is logged in</p>';             
+                        }
+                    }
+                }
+                else
+                {
+                    header("Location: adminLogin.php");
+                }   
+                
             }
 
-            function printLoggedInUser()
+            function GetOrderDetail(Order $order)
             {
-                $userID = $_SESSION["userID"];
-                $sqlComm = "SELECT displayName FROM tblUser WHERE userID='$userID'";
+                $allDetail = array();
+                $orderID = $order->getID();
+                $sqlComm = "SELECT * FROM tblOrderDetail WHERE orderID='$orderID'";
                 $sqlReturn = $this->sqlConnection->query($sqlComm);
     
                 if($sqlReturn->num_rows > 0)
                 {
                     while($row = $sqlReturn->fetch_assoc())
                     {
-                        echo '<p>'.$row["displayName"].' is logged in</p>';             
+                        $product = $this->getProduct($row["productID"]);
+                        $order->addDetail(new orderDetail($row["orderDetailID"], $product, $row["quantity"]));          
                     }
-                }
+                }  
                 
+            }
+
+            function setDisplayedOrder(Order $order)
+            {
+                $this->displayedOrder = $order;
+            }
+
+            function getDisplayedOrder()
+            {
+               return $this->displayedOrder;
             }
         }
 
@@ -304,6 +372,46 @@ session_start();
             function getID()
             {
                 return $this->customerID;
+            }
+
+            function getName()
+            {
+                return $this->customerName;
+            }
+
+            function getAddressLine1()
+            {
+                return $this->addressLine1;
+            }
+
+            function getAddressLine2()
+            {
+                return $this->addressLine2;
+            }
+
+            function getCity()
+            {
+                return $this->city;
+            }
+
+            function getCounty()
+            {
+                return $this->county;
+            }
+
+            function getPostcode()
+            {
+                return $this->postcode;
+            }
+
+            function getPhone()
+            {
+                return $this->contactNumber;
+            }
+            
+            function getEmailAddress()
+            {
+                return $this->emailAddress;
             }
 
             function printDetails()
@@ -418,18 +526,31 @@ session_start();
 
             private int $orderID;
 
-            private int $orderDate;
+            private string $orderDate;
 
-            function __construct(int $orderID, int $orderDate)
+            private int $customerID;
+
+            function __construct(int $orderID, string $orderDate, int $customerID)
             {
                 $this->orderID = $orderID;
                 $this->orderDate = $orderDate;
+                $this->customerID = $customerID;
                 $this->orderItems = array();
             }
 
-            public function getID()
+            function getID()
             {
                 return $this->orderID;
+            }           
+
+            function getDate()
+            {
+                return $this->orderDate;
+            }
+
+            function getCustomerID()
+            {
+                return $this->customerID;
             }
 
             public function addDetail(orderDetail $newItem)
@@ -450,7 +571,7 @@ session_start();
             function printOrderNumber()
             {
                 echo '<h2 id="invoiceNumber">'.$this->orderID.'</h2>';
-            }
+            }            
         }
 
         class orderDetail
@@ -570,10 +691,35 @@ session_start();
                     </div>';
             }
         }
+
         
+        session_start();
         $dbConnect = new dbConnect;
-        $dbConnect->retrieveAllProducts();           
+        $dbConnect->retrieveAllProducts();   
+                
        
+        if(!isset($_SESSION["dateFrom"]))
+        {
+            $lastWeek = strtotime("-1 week");
+            $_SESSION["dateFrom"] = date("Y-m-d", $lastWeek);
+        }
+        else if(!isset($_POST["orderChange"]))
+        {
+            $_SESSION["dateFrom"] = $_POST["dateFrom"];
+        }
+
+        if(!isset($_SESSION["dateTo"]))
+        {
+            
+            $_SESSION["dateTo"] = date("Y-m-d");
+        }
+        else if(!isset($_POST["orderChange"]))
+        {
+            $_SESSION["dateTo"] = $_POST["dateTo"];
+        }
+        
+        $dbConnect->retrieveFilteredOrders();
+
 ?>
 
 <!DOCTYPE html>
@@ -588,7 +734,7 @@ session_start();
 
     <div id="navBar">
         <div id="adminUserName">
-            <?php $dbConnect->printLoggedInUser() ?>
+            <?php $dbConnect->checkAuthAndPrintLoggedInUser() ?>
         </div>
         <div id="adminLogin">
             <a href="adminLogin.php">Logout</a>
@@ -608,35 +754,78 @@ session_start();
         <div id="orderBreakdown">
             <h2>All Current Orders</h2>
             <div id="ordersTableDiv">
+                <span id="dateRange">
+                    <p>Filter orders by date</p>   
+                    <form method="post">              
+                        <label for="dateFrom">From:</label><input type="date" name="dateFrom" value="<?php echo $_SESSION["dateFrom"] ?>"/>
+                        <label for="dateTo">To:</label><input type="date" name="dateTo" value="<?php echo $_SESSION["dateTo"] ?>"/>
+                        <input type="submit" value="Click to filter"/>
+                    </form>
+                </span>
                 <table id="ordersTable">
                     <tr>
                         <th>Order Number</th>
                         <th>Order Date</th>
                         <th>Customer Name</th>
                         <th>Order Total</th>
+                        <th>View Detail</th>
                     </tr>
-                    <tr>
-                        <td>Hello</td>
-                        <td>Hello</td>
-                        <td>Hello</td>
-                        <td>Hello</td>
-                    </tr>
+                        <?php
+                            if($dbConnect->getAllOrders() != null)
+                            {
+                                $loopCount = 1;
+                                $viewDetail = null;
+
+                                foreach($dbConnect->getAllOrders() as $order)
+                                {
+                                    
+                                    if($loopCount == $_GET["order"])
+                                        {
+                                            $viewDetail = "Selected. See Below";
+                                            $dbConnect->setDisplayedOrder($order);                                            
+                                        }
+                                        else
+                                        {
+                                            $viewDetail = '<form method="post" action="adminOrders.php?order='.($loopCount).'">
+                                            <input type="hidden" name="orderChange" value="true">
+                                            <input type="submit" value="View Details">
+                                            </form>';
+                                        }
+                                    $customerID = $order->getCustomerID();
+                                    echo '<tr>
+                                    <td>'.$order->getID().'</td>
+                                    <td>'.$order->getDate().'</td>
+                                    <td>'.$dbConnect->getCustomer("nameOnly", $customerID).'</td>
+                                    <td>'.$dbConnect->GetOrderTotal($order).'</td>
+                                    <td>'.$viewDetail.'</td>
+                                    </tr>';
+
+                                    $loopCount++;
+                                }
+                            }
+                        ?>    
                 </table>
             </div>            
         </div>
-        <div id="orderDetailDiv">
+
+        
+
+        <div id="orderDetailDiv" <?php if($dbConnect->getDisplayedOrder() == null){echo 'class="hidden"';} ?>>
             <h2>Order detail</h2>
             <div id="orderDetail">
                 <span id="orderNumberSpan">
                     <strong>Order Number:</strong>
-                    <p id="orderDetailNumber">33322332</p>
+                    <p id="orderDetailNumber"><?php echo $dbConnect->getDisplayedOrder()->getID(); ?></p>
                 </span>
                 <div id="customerDetailsDiv">
                     <strong>Customer Details</strong>
-                    <p id="orderDetailCustomerName">asdaasdadas</p>
-                    <p id="orderDetailAddress">asda<br />asdasd<br />sdsad<br />asdfas<br />ll2345d</p>
-                    <p id="orderDetailEmail">asdasdasdasd</p>
-                    <p id="orderDetailContact">1234235234</p>
+                    <?php 
+                        $customer = $dbConnect->getCustomer("fullDetail", $dbConnect->getDisplayedOrder()->getCustomerID());
+                    echo '<p id="orderDetailCustomerName">'.$customer->getName().'</p>
+                    <p id="orderDetailAddress">'.$customer->getAddressLine1().'<br />'.$customer->getAddressLine2().'<br />'.$customer->getCity().'<br />'.$customer->getCounty().'<br />'.$customer->getPostcode().'</p>
+                    <p id="orderDetailEmail">'.$customer->getEmailAddress().'</p>
+                    <p id="orderDetailContact">'.$customer->getPhone().'</p>';
+                    ?>
                 </div>
                 <div id="orderDetailsDiv">
                     <strong>Orders Details</strong>
@@ -647,17 +836,22 @@ session_start();
                                 <th>Quantity</th>
                                 <th>Item total</th>
                             </tr>
-                            <tr>
-                                <td>Hello</td>
-                                <td>Hello</td>
-                                <td>Hello</td>
-                            </tr>
+                            <?php
+                                foreach($dbConnect->getDisplayedOrder()->getAllItems() as $orderDetail)
+                                    {
+                                        echo '<tr>
+                                            <td>'.$orderDetail->getProduct()->getName().'</td>
+                                            <td>'.$orderDetail->getQuantity().'</td>
+                                            <td>'.number_format($orderDetail->getProduct()->getPrice()*$orderDetail->getQuantity(), 2).'</td>
+                                            </tr>';
+                                    }
+                            ?>
                         </table>
                     </div>
                 </div>
                 <span id="orderTotalSpan">
                     <strong>Order Total:</strong>
-                    <p id="orderDetailTotal">12312</p>
+                    <p id="orderDetailTotal">&pound;<?php echo $dbConnect->GetOrderTotal($dbConnect->getDisplayedOrder()) ?></p>
                 </span>
             </div>
         </div>        

@@ -1,7 +1,7 @@
 <?php
         namespace gazelleRunningSupplies;
         use mysqli;
-
+        session_start();
         
 
         class dbConnect
@@ -54,8 +54,10 @@
 
             function createBasket()
             {
-                $dateCreated = date("Y/m/d");
-                $sqlComm = "INSERT INTO tblBasket (dateCreated) VALUES ('.$dateCreated.')";
+                
+                $dateCreated = date("Y-m-d");
+                
+                $sqlComm = "INSERT INTO tblBasket (dateCreated) VALUES ('$dateCreated')";
                 $sqlReturn = $this->sqlConnection->query($sqlComm);
     
                 $basketID = mysqli_insert_id($this->sqlConnection);
@@ -70,7 +72,7 @@
                 $currentQuantity = 0;
                 $currentBasketItemID = 0;
 
-                $sqlComm = "SELECT * FROM tblBasketItem WHERE basketID='.$basketID.'";
+                $sqlComm = "SELECT * FROM tblBasketItem WHERE basketID='$basketID'";
                 $sqlReturn = $this->sqlConnection->query($sqlComm);
     
                 if($sqlReturn->num_rows > 0)
@@ -97,7 +99,7 @@
                 }
                 else
                 {
-                    $sqlComm = "INSERT INTO tblBasketItem (productID, quantity, basketID) VALUES ('.$productID.', 1, '.$basketID.')";
+                    $sqlComm = "INSERT INTO tblBasketItem (productID, quantity, basketID) VALUES ('$productID', 1, '$basketID')";
                
                     $this->sqlConnection->query($sqlComm);
 
@@ -142,7 +144,7 @@
                 $basketID = $_SESSION["basketID"];
                 $this->basket = new Basket($basketID);
 
-                $sqlComm = "SELECT * FROM tblBasketItem WHERE basketID='.$basketID.'";
+                $sqlComm = "SELECT * FROM tblBasketItem WHERE basketID='$basketID'";
                 $sqlReturn = $this->sqlConnection->query($sqlComm);
     
                 if($sqlReturn->num_rows > 0)
@@ -161,6 +163,8 @@
             {
                 $total = 0;
 
+                if($this->basket != null)
+                {
                 if($this->basket->getAllItems() != null)
                 {
                     foreach($this->basket->getAllItems() as $basketItem)
@@ -168,6 +172,7 @@
                         $total += $basketItem->getProduct()->getPrice()*$basketItem->getQuantity();
                     }
                 }
+            }
 
                 echo '<h2>&pound;'.number_format($total, 2).'</h2>';
             }
@@ -363,7 +368,7 @@
         
         $dbConnect = new dbConnect;
         $dbConnect->retrieveAllProducts();
-        session_start();
+        
         
         //https://phppot.com/php/simple-php-shopping-cart/
         if(!empty($_GET["action"]))
@@ -452,10 +457,13 @@
             </span>            
              
             <?php
-            if($dbConnect->getBasket()->getAllItems() != null)
-            {
-                echo ' <button class="uiButton" onclick="launchOrderForm()">Proceed To Order Form</button>';
-            }           
+           if($dbConnect->getBasket() != null)
+           {
+                if($dbConnect->getBasket()->getAllItems() != null)
+                    {
+                        echo ' <button class="uiButton" onclick="launchOrderForm()">Proceed To Order Form</button>';
+                    } 
+            }          
             ?>
         </div>
          

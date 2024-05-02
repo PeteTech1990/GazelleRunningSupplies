@@ -148,7 +148,7 @@ use mysqli;
                 $basketID = $_SESSION["basketID"];
                 $this->basket = new Basket($basketID);
 
-                $sqlComm = "SELECT * FROM tblBasketItem WHERE basketID='.$basketID.'";
+                $sqlComm = "SELECT * FROM tblBasketItem WHERE basketID='$basketID'";
                 $sqlReturn = $this->sqlConnection->query($sqlComm);
     
                 if($sqlReturn->num_rows > 0)
@@ -222,9 +222,9 @@ use mysqli;
 
             function createOrder()
             {
-                $dateCreated =  strtotime("Y/m/d");
+                $dateCreated =  date("Y-m-d");
                 $customerID = $this->customer->getID();
-                $sqlComm = "INSERT INTO tblOrder (orderDate, customerID) VALUES ('.$dateCreated.', '.$customerID.')";
+                $sqlComm = "INSERT INTO tblOrder (orderDate, customerID) VALUES ('$dateCreated', '$customerID')";
                 $sqlReturn = $this->sqlConnection->query($sqlComm);
     
                 $orderID = mysqli_insert_id($this->sqlConnection);
@@ -400,9 +400,9 @@ use mysqli;
 
             private int $orderID;
 
-            private int $orderDate;
+            private string $orderDate;
 
-            function __construct(int $orderID, int $orderDate)
+            function __construct(int $orderID, string $orderDate)
             {
                 $this->orderID = $orderID;
                 $this->orderDate = $orderDate;
@@ -553,10 +553,10 @@ use mysqli;
             }
         }
         
-        session_start();
+        session_start(); 
         $dbConnect = new dbConnect;
         $dbConnect->retrieveAllProducts();
-        $dbConnect->InstantiateAndPopulateBasket(); 
+        $dbConnect->InstantiateAndPopulateBasket();        
         $dbConnect->createCustomer();
         $dbConnect->createOrder();       
         
@@ -594,9 +594,9 @@ use mysqli;
     
 
     <div id="mainContent">        
-        <div id="invoiceDetails">
+        <div id="invoiceDetails">            
+            <h2>Thankyou. Your order has been placed.</h2>
             <div id="invoiceNumberLabels">
-                <h2>Thankyou. Your order has been placed</h2>
                <h2>Invoice Number: </h2>
                <?php $dbConnect->order->printOrderNumber();?>
             </div>

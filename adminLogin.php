@@ -180,38 +180,13 @@
                 return $this->basket;
             }
 
-            function authenticateUser()
-            {
-                $username = $_POST["txtUsername"];
-                $sqlComm = "SELECT * FROM tblUser WHERE username='$username'";
-                $sqlReturn = $this->sqlConnection->query($sqlComm);
-    
-                if($sqlReturn->num_rows > 0)
-                {
-                    while($row = $sqlReturn->fetch_assoc())
-                    {
-                        if($row["password"] == $_POST["txtPassword"])
-                        {
-                            $_SESSION["userID"] == $row["userID"];
-                            return true;
-                        }
-                        else
-                        {
-                            $this->failLoginMessage = "Password incorrect, please try again";
-                        }             
-                    }
-                }
-                else
-                {
-                    $this->failLoginMessage = "Username unknown, please try again";
-                }   
-            }
+            
 
             function printLoginFailMessage()
             {
-                if($this->failLoginMessage != null)
+                if(isset($_SESSION["failLoginMessage"]))
                 {
-                    echo '<p id="loginFailMessage">'.$this->failLoginMessage.'</p>';
+                    echo '<p id="loginFailMessage">'.$_SESSION["failLoginMessage"].'</p>';
                 }
             }
         }
@@ -221,16 +196,7 @@
         $dbConnect = new dbConnect;        
         
         
-        //https://phppot.com/php/simple-php-shopping-cart/
-        if(!empty($_GET["action"]))
-        {
-            switch($_GET["action"])
-            {
-                case "authCheck":
-                    if($dbConnect->authenticateUser()){header("Location: adminOrders.php");}                
-                    break;                
-            }
-        }
+        
 
 
         
@@ -267,7 +233,7 @@
         <div id="userDetails">
             <?php $dbConnect->printLoginFailMessage() ?>
             <h2>Enter your username and password</h2>
-            <form id="userDetailsForm" method="post" action="adminLogin.php?action=authCheck">
+            <form id="userDetailsForm" method="post" action="loginCheck.php">
                 <span class="inputAreasLogin" id="usernameInput"><label for="txtUsername">Username: </label><input name="txtUsername" required/></span>
                 <span class="inputAreasLogin" id="passwordInput"><label for="txtPassword">Password:   </label><input name="txtPassword" required/></span>                
                 <input type="submit" name="Login"  class="uiButton"/>
