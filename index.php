@@ -311,6 +311,16 @@
             {
                 return $this->basketItems;
             }
+
+            public function getItemCount()
+            {
+                $total = 0;
+                foreach($this->basketItems as $basketItem)
+                {
+                    $total += $basketItem->getQuantity();
+                }
+                return $total;
+            }
         }
 
         class basketItem
@@ -461,8 +471,20 @@
            {
                 if($dbConnect->getBasket()->getAllItems() != null)
                     {
-                        echo ' <button class="uiButton" onclick="launchOrderForm()">Proceed To Order Form</button>';
+                        if($dbConnect->getBasket()->getItemCount() > 1)
+                        {
+                            echo ' <button class="uiButton" onclick="launchOrderForm()">Proceed To Order Form</button>';
+                        }
+                        else
+                        {
+                            echo ' <p id="minBasketWarning">**** Minimum order quantity is 2 items ****</p>';
+                        }
+
                     } 
+                    else
+                        {
+                            echo ' <p id="minBasketWarning">**** Minimum order quantity is 2 items ****</p>';
+                        }
             }          
             ?>
         </div>
@@ -576,7 +598,7 @@
 
 
     <footer>
-        <p>Gazelle Running Supplies</p>
+        <p>&copy; Gazelle Running Supplies</p>
     </footer>
 
     <script src="myJavaScript.js"></script>

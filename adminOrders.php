@@ -703,7 +703,7 @@ use mysqli;
             $lastWeek = strtotime("-1 week");
             $_SESSION["dateFrom"] = date("Y-m-d", $lastWeek);
         }
-        else if(!isset($_POST["orderChange"]))
+        else if(!isset($_POST["orderChange"]) and isset($_POST["dateFrom"]))
         {
             $_SESSION["dateFrom"] = $_POST["dateFrom"];
         }
@@ -713,7 +713,7 @@ use mysqli;
             
             $_SESSION["dateTo"] = date("Y-m-d");
         }
-        else if(!isset($_POST["orderChange"]))
+        else if(!isset($_POST["orderChange"]) and isset($_POST["dateTo"]))
         {
             $_SESSION["dateTo"] = $_POST["dateTo"];
         }
@@ -737,7 +737,7 @@ use mysqli;
             <?php $dbConnect->checkAuthAndPrintLoggedInUser() ?>
         </div>
         <div id="adminLogin">
-            <a href="adminLogin.php">Logout</a>
+            <a href="adminLogin.php?action=logout">Logout</a>
         </div>
     </div>
 
@@ -824,7 +824,7 @@ use mysqli;
                     echo '<p id="orderDetailCustomerName">'.$customer->getName().'</p>
                     <p id="orderDetailAddress">'.$customer->getAddressLine1().'<br />'.$customer->getAddressLine2().'<br />'.$customer->getCity().'<br />'.$customer->getCounty().'<br />'.$customer->getPostcode().'</p>
                     <p id="orderDetailEmail">'.$customer->getEmailAddress().'</p>
-                    <p id="orderDetailContact">'.$customer->getPhone().'</p>';
+                    <p id="orderDetailContact">'.sprintf("%011s",$customer->getPhone()).'</p>';
                     ?>
                 </div>
                 <div id="orderDetailsDiv">
@@ -859,7 +859,7 @@ use mysqli;
 
 
     <footer>
-        <p>Gazelle Running Supplies</p>
+        <p>&copy; Gazelle Running Supplies</p>
     </footer>
 
     <script src="myJavaScript.js"></script>

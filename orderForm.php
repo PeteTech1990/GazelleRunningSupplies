@@ -325,7 +325,7 @@
                             echo '<tr>
                                 <td>'.$basketItem->getProduct()->getName().'</td>
                                 <td>'.$basketItem->getQuantity().'</td>
-                                <td>'.number_format($basketItem->getProduct()->getPrice()*$basketItem->getQuantity(), 2).'</td>
+                                <td>&pound;'.number_format($basketItem->getProduct()->getPrice()*$basketItem->getQuantity(), 2).'</td>
                                 </tr>';
                         }
                     ?>
@@ -344,9 +344,9 @@
                 <span class="inputAreas" id="address2Input"><label for="txtAddress2">Address Line 2: </label><input name="txtAddress2" required/></span>
                 <span class="inputAreas" id="cityInput"><label for="txtCity">City: </label><input name="txtCity" required/></span>
                 <span class="inputAreas" id="countyInput"><label for="txtCounty">County: </label><input name="txtCounty" required/></span>
-                <span class="inputAreas" id="postcodeInput"><label for="txtPostcode">Postcode: </label><input name="txtPostcode" required/></span>
-                <span class="inputAreas" id="phoneInput"><label for="txtPhone">Contact Number: </label><input type="number" name="txtPhone" required/></span>
-                <span class="inputAreas" id="emailInput"><label for="txtEmail">Email Address: </label><input type="email" name="txtEmail" required/></span>
+                <span class="inputAreas" id="postcodeInput"><label for="txtPostcode">Postcode: </label><input name="txtPostcode" required maxlength=7 /></span>
+                <span class="inputAreas" id="phoneInput"><label for="txtPhone">Contact Number: </label><input type="number" name="txtPhone" required maxlength=11 /></span>
+                <span class="inputAreas" id="emailInput"><label for="txtEmail">Email Address: </label><input type="email" name="txtEmail" required /></span>
             
         </div>
         <div id="customerActions">
@@ -364,7 +364,7 @@
 
 
     <footer>
-        <p>Gazelle Running Supplies</p>
+        <p>&copy; Gazelle Running Supplies</p>
     </footer>
 
     <script src="myJavaScript.js"></script>

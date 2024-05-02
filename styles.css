@@ -370,7 +370,7 @@ footer {
     align-items: center;
 }
 
-#loginFailMessage{
+#loginFailMessage,#minBasketWarning{
     color:#FF0000;
 }
 
@@ -510,6 +510,14 @@ footer {
 
 .hidden {
     display: none;
+}
+
+.loginLabel {
+    margin: 5em;
+}
+
+#passwordLabel{
+    margin-right: 5.4em;
 }
 
 /*https://www.w3schools.com/howto/howto_js_accordion.asp*/

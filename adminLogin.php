@@ -1,7 +1,7 @@
 <?php
         namespace gazelleRunningSupplies;
         use mysqli;
-        session_start();
+        
 
         
 
@@ -192,11 +192,14 @@
         }
 
         
-        
+        session_start();
         $dbConnect = new dbConnect;        
         
-        
-        
+        if(isset($_GET["action"]))
+        {
+            session_destroy();
+        }
+        session_start();
 
 
         
@@ -234,8 +237,8 @@
             <?php $dbConnect->printLoginFailMessage() ?>
             <h2>Enter your username and password</h2>
             <form id="userDetailsForm" method="post" action="loginCheck.php">
-                <span class="inputAreasLogin" id="usernameInput"><label for="txtUsername">Username: </label><input name="txtUsername" required/></span>
-                <span class="inputAreasLogin" id="passwordInput"><label for="txtPassword">Password:   </label><input name="txtPassword" required/></span>                
+                <span class="inputAreasLogin" id="usernameInput"><label class="loginLabel" for="txtUsername">Username:</label><input name="txtUsername" required/></span>
+                <span class="inputAreasLogin" id="passwordInput"><label class="loginLabel" id="passwordLabel" for="txtPassword">Password:</label><input type="password" name="txtPassword" required/></span>                
                 <input type="submit" name="Login"  class="uiButton"/>
             </form>
             
@@ -246,7 +249,7 @@
 
 
     <footer>
-        <p>Gazelle Running Supplies</p>
+        <p>&copy; Gazelle Running Supplies</p>
     </footer>
 
     <script src="myJavaScript.js"></script>

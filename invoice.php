@@ -293,7 +293,7 @@ use mysqli;
                 echo '<p id="fullName">'.$this->customerName.'</p>
                 <p id="addressFull" class="customerDetailsInvLabel">'.$this->addressLine1.' '.$this->addressLine2.' <br /> '.$this->city.' <br /> '.$this->county.' <br /> '.$this->postcode.'</p>
                 <p id="emailAddress" class="customerDetailsInvLabel">'.$this->emailAddress.'</p>
-                <p id="contactNumber" class="customerDetailsInvLabel">'.$this->contactNumber.'</p>';
+                <p id="contactNumber" class="customerDetailsInvLabel">'.sprintf("%011s",$this->contactNumber).'</p>';
             }
         }
 
@@ -620,7 +620,7 @@ use mysqli;
                             echo '<tr>
                                 <td>'.$orderDetail->getProduct()->getName().'</td>
                                 <td>'.$orderDetail->getQuantity().'</td>
-                                <td>'.number_format($orderDetail->getProduct()->getPrice()*$orderDetail->getQuantity(), 2).'</td>
+                                <td>&pound;'.number_format($orderDetail->getProduct()->getPrice()*$orderDetail->getQuantity(), 2).'</td>
                                 </tr>';
                         }
                     ?>
@@ -642,7 +642,7 @@ use mysqli;
     
 
     <footer>
-        <p>Gazelle Running Supplies</p>
+        <p>&copy; Gazelle Running Supplies</p>
     </footer>
 
     <script src="myJavaScript.js"></script>
