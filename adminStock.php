@@ -8,16 +8,14 @@ use mysqli;
 
         
 
-        class dbConnect
+        class DBConnect
         {       
 
             public object $sqlConnection;
             var $allProducts;
-            var $basket;
 
             var $allOrders;
 
-            var $displayedOrder;
 
             function __construct()
             {
@@ -29,7 +27,7 @@ use mysqli;
                 
             }
 
-            function retrieveAllProducts()
+            function RetrieveAllProducts()
             {
                 $sqlComm = "SELECT * FROM tblProduct ORDER BY productName";
                 $sqlReturn = $this->sqlConnection->query($sqlComm);
@@ -44,247 +42,39 @@ use mysqli;
                 }  
             }
 
-            function retrieveFilteredOrders()
-            {
-                $dateFrom = $_SESSION["dateFrom"];
-                $dateTo = $_SESSION["dateTo"];
-                $sqlComm = "SELECT * FROM tblOrder WHERE orderDate BETWEEN '$dateFrom' AND '$dateTo' ORDER BY orderDate DESC";
-                $sqlReturn = $this->sqlConnection->query($sqlComm);
-    
-                if($sqlReturn->num_rows > 0)
-                {
-                    while($row = $sqlReturn->fetch_assoc())
-                    {
-                        $item = new Order($row["orderID"], $row["orderDate"], $row["customerID"]); 
-                        $this->GetOrderDetail($item);                                                                        
-                        $this->allOrders[] = $item;                
-                    }
-                }  
-            }
-
-            function getAllProducts()
+            function GetAllProducts()
             {
                 return $this->allProducts;
             }
 
-            function getAllOrders()
-            {
-                return $this->allOrders;
-            }
 
-            function getProduct(int $productID)
+
+            function GetProduct(int $productID)
             {
                 foreach($this->allProducts as $product)
                 {
-                    if($product->getID() == $productID)
+                    if($product->GetID() == $productID)
                     {
                         return $product;
                     }
                 }
             }
 
-            function createBasket()
-            {
-                $dateCreated = date("Y-m-d");
-                $sqlComm = "INSERT INTO tblBasket (dateCreated) VALUES ('$dateCreated')";
-                $sqlReturn = $this->sqlConnection->query($sqlComm);
-    
-                $basketID = mysqli_insert_id($this->sqlConnection);
 
-                return $basketID;
-            }
-                
-            function addToBasket(int $productID)
-            {
-                $basketID = $_SESSION["basketID"];
-                $productExist = false;
-                $currentQuantity = 0;
-                $currentBasketItemID = 0;
-
-                $sqlComm = "SELECT * FROM tblBasketItem WHERE basketID='$basketID'";
-                $sqlReturn = $this->sqlConnection->query($sqlComm);
-    
-                if($sqlReturn->num_rows > 0)
-                {
-                    while($row = $sqlReturn->fetch_assoc())
-                    {
-                        if($row["productID"] == $productID)
-                        {
-                            $productExist = true;
-                            $currentQuantity = (int)$row["quantity"];
-                            $currentBasketItemID = $row["basketItemID"];
-                        }              
-                    }
-                }                
-
-                if($productExist)
-                {
-                    $newQuantity = ($currentQuantity + 1);
-
-                    $sqlComm = "UPDATE tblBasketItem SET quantity='$newQuantity' WHERE basketItemID='$currentBasketItemID'";
-                    $this->sqlConnection->query($sqlComm);
-                    
-                    
-                }
-                else
-                {
-                    $sqlComm = "INSERT INTO tblBasketItem (productID, quantity, basketID) VALUES ('$productID', 1, '$basketID')";
-               
-                    $this->sqlConnection->query($sqlComm);
-
-                }
- 
-            }
-
-            function removeFromBasket(int $basketItemID)
-            {
-                $sqlComm = "DELETE FROM tblBasketItem WHERE basketItemID='$basketItemID'";
-                
-                $this->sqlConnection->query($sqlComm);
-            }
-
-            function updateBasket(int $basketItemID, int $quantity)
-            {
-                if($quantity < 1)
-                {
-                    $this->removeFromBasket($basketItemID);
-                }
-                else
-                {
-                    $sqlComm = "UPDATE tblBasketItem SET quantity='$quantity' WHERE basketItemID='$basketItemID'";
-                
-                    $this->sqlConnection->query($sqlComm);
-                }
-            }
-
-            function destroyBasket()
-            {
-                $basketID = $_SESSION["basketID"];
-                $sqlComm = "DELETE FROM tblBasketItem WHERE basketID='$basketID'";
-                
-                $this->sqlConnection->query($sqlComm);
-                $sqlComm = "DELETE FROM tblBasket WHERE basketID='$basketID'";
-                
-                $this->sqlConnection->query($sqlComm);
-            }
-
-            function InstantiateAndPopulateBasket()
-            {
-                $basketID = $_SESSION["basketID"];
-                $this->basket = new Basket($basketID);
-
-                $sqlComm = "SELECT * FROM tblBasketItem WHERE basketID='$basketID'";
-                $sqlReturn = $this->sqlConnection->query($sqlComm);
-    
-                if($sqlReturn->num_rows > 0)
-                {
-                    while($row = $sqlReturn->fetch_assoc())
-                    {
-                        $product = $this->getProduct($row["productID"]);
-                        $newBasketItem = new basketItem($row["basketItemID"],$product , $row["quantity"]);
-                        $this->basket->addProductToBasket($newBasketItem);               
-                    }
-                }                
-                
-            }
-
-            function getBasketTotal()
-            {
-                $total = 0;
-
-                if($this->basket->getAllItems() != null)
-                {
-                    foreach($this->basket->getAllItems() as $basketItem)
-                    {
-                        $total += $basketItem->getProduct()->getPrice()*$basketItem->getQuantity();
-                    }
-                }
-
-                echo '<h2>&pound;'.number_format($total, 2).'</h2>';
-            }
-
-            function getOrderTotal(Order $order)
-            {
-                $total = 0;
-
-                if($order->getAllItems() != null)
-                {
-                    foreach($order->getAllItems() as $orderItem)
-                    {
-                        $total += $orderItem->getProduct()->getPrice()*$orderItem->getQuantity();
-                    }
-                }
-
-                return number_format($total, 2);
-            }
-
-            function getBasket()
-            {
-                return $this->basket;
-            }
-
-            function createCustomer()
-            {
-                $customerName = $_POST["txtFullName"];
-                $customerAdd1 = $_POST["txtAddress1"];
-                $customerAdd2 = $_POST["txtAddress2"];
-                $customerCity = $_POST["txtCity"];
-                $customerCounty = $_POST["txtCounty"];
-                $customerPostcode = $_POST["txtPostcode"];
-                $customerNumber = $_POST["txtPhone"];
-                $customerEmail = $_POST["txtEmail"];
-
-                $insertString = "'$customerName', '$customerAdd1', '$customerAdd2', '$customerCity', '$customerCounty', '$customerPostcode', '$customerNumber', '$customerEmail'";
-                
-                $sqlComm = "INSERT INTO tblCustomer (customerName, addressLine1, addressLine2, city, county, postcode, contactNumber, emailAddress) VALUES ($insertString)";
-               
-                $this->sqlConnection->query($sqlComm);
-
-                $customerID = mysqli_insert_id($this->sqlConnection);
-
-                $this->customer = new Customer($customerID, $customerName, $customerAdd1, $customerAdd2, $customerCity, $customerCounty, $customerPostcode, $customerNumber, $customerEmail);
-            }
 
             
-                function getCustomer(string $request, int $customerID)
-                {
-                    
-                    $customer = null;
+         
+           
 
-                    switch($request)
-                    {
-                        case "nameOnly":
-                            $sqlComm = "SELECT customerName FROM tblcustomer WHERE customerID='$customerID'";
-                            $sqlReturn = $this->sqlConnection->query($sqlComm);
-    
-                            if($sqlReturn->num_rows > 0)
-                            {
-                                while($row = $sqlReturn->fetch_assoc())
-                                {
-                                    $customer = $row["customerName"];               
-                                }
-                            }  
-                            break;  
-                        case "fullDetail":
-                            $sqlComm = "SELECT * FROM tblcustomer WHERE customerID='$customerID'";
-                            $sqlReturn = $this->sqlConnection->query($sqlComm);
-    
-                            if($sqlReturn->num_rows > 0)
-                            {
-                                while($row = $sqlReturn->fetch_assoc())
-                                {
-                                    $customer = new Customer($customerID, $row["customerName"], $row["addressLine1"], $row["addressLine2"], $row["city"], $row["county"], $row["postcode"], $row["contactNumber"], $row["emailAddress"]);               
-                                }
-                            }
-                            break; 
-                    }
+            
+           
 
-                    return $customer;
-                }
+            
+                
 
             
 
-            function checkAuthAndPrintLoggedInUser()
+            function CheckAuthAndPrintLoggedInUser()
             {
                 if(isset($_SESSION["userID"]))
                 {
@@ -310,7 +100,7 @@ use mysqli;
             function GetOrderDetail(Order $order)
             {
                 $allDetail = array();
-                $orderID = $order->getID();
+                $orderID = $order->GetID();
                 $sqlComm = "SELECT * FROM tblOrderDetail WHERE orderID='$orderID'";
                 $sqlReturn = $this->sqlConnection->query($sqlComm);
     
@@ -318,24 +108,16 @@ use mysqli;
                 {
                     while($row = $sqlReturn->fetch_assoc())
                     {
-                        $product = $this->getProduct($row["productID"]);
-                        $order->addDetail(new orderDetail($row["orderDetailID"], $product, $row["quantity"]));          
+                        $product = $this->GetProduct($row["productID"]);
+                        $order->AddDetail(new orderDetail($row["orderDetailID"], $product, $row["quantity"]));          
                     }
                 }  
                 
             }
 
-            function setDisplayedOrder(Order $order)
-            {
-                $this->displayedOrder = $order;
-            }
+            
 
-            function getDisplayedOrder()
-            {
-               return $this->displayedOrder;
-            }
-
-            function getNumberOrdered(int $productID)
+            function GetNumberOrdered(int $productID)
             {
                 $result = null;
                 $sqlComm = "SELECT COUNT(orderDetailID) AS countOfRows FROM tblOrderDetail WHERE productID='$productID'";
@@ -352,92 +134,7 @@ use mysqli;
 
         }
 
-        class Customer
-        {
-            private int $customerID;
-
-            private string $customerName;
-
-            private string $addressLine1;
-
-            private string $addressLine2;
-
-            private string $city;
-
-            private string $county;
-
-            private string $postcode;
-
-            private int $contactNumber;
-
-            private string $emailAddress;
-
-            function __construct(int $ID, string $name, string $add1, string $add2, string $city, string $county, string $postcode, int $contactNo, string $email)
-            {
-                $this->customerID = $ID;
-                $this->customerName = $name;
-                $this->addressLine1 = $add1;
-                $this->addressLine2 = $add2;
-                $this->city = $city;
-                $this->county = $county;
-                $this->postcode = $postcode;
-                $this->contactNumber = $contactNo;
-                $this->emailAddress = $email;
-            }  
-
-            function getID()
-            {
-                return $this->customerID;
-            }
-
-            function getName()
-            {
-                return $this->customerName;
-            }
-
-            function getAddressLine1()
-            {
-                return $this->addressLine1;
-            }
-
-            function getAddressLine2()
-            {
-                return $this->addressLine2;
-            }
-
-            function getCity()
-            {
-                return $this->city;
-            }
-
-            function getCounty()
-            {
-                return $this->county;
-            }
-
-            function getPostcode()
-            {
-                return $this->postcode;
-            }
-
-            function getPhone()
-            {
-                return $this->contactNumber;
-            }
-            
-            function getEmailAddress()
-            {
-                return $this->emailAddress;
-            }
-
-            function printDetails()
-            {
-                echo '<p id="fullName">'.$this->customerName.'</p>
-                <p id="addressFull" class="customerDetailsInvLabel">'.$this->addressLine1.' '.$this->addressLine2.' <br /> '.$this->city.' <br /> '.$this->county.' <br /> '.$this->postcode.'</p>
-                <p id="emailAddress" class="customerDetailsInvLabel">'.$this->emailAddress.'</p>
-                <p id="contactNumber" class="customerDetailsInvLabel">'.$this->contactNumber.'</p>';
-            }
-        }
+        
 
          class Product
         { 
@@ -458,82 +155,33 @@ use mysqli;
                 $this->stock = $stock;
                 $this->category = $category;
                 $this->description = $description;
-                $this->addProductImagePath("/productImages/" . $this->productID);
+                $this->AddProductImagePath("/productImages/" . $this->productID);
             }
 
-            function addProductImagePath(string $image)
+            function AddProductImagePath(string $image)
             {
                 $this->productImagePath = $image;
             }
 
-            function adjustPrice(float $amount)
-            {
-                $this->price = $amount;
-            }
-
-            function getID()
+            function GetID()
             {
                 return $this->productID;
             }
 
-            function getName()
+            function GetName()
             {
                 return $this->productName;
             }
 
-            function getImagePath()
-            {
-                return $this->productImagePath;
-            }
 
-            function getPrice()
-            {
-                return $this->price;
-            }
 
-            function getStock()
+            function GetStock()
             {
                 return $this->stock;
             }
 
-            function getCategory()
-            {
-                return $this->category;
-            }
 
-            function getSpan()
-            {
-                echo '<span id=productDetails'.$this->productID.' class="productSpan" >
-                        <img onclick="openProductModal('.$this->productID.')" id=productImage'.$this->productID.' class="productImage" src="'.$this->productImagePath.'.jpeg"/>
-                        <span class="productDetails">
-                            <p id="productName">' . $this->productName . '</p>
-                            <p id="productPrice">&pound;' . number_format($this->price, 2) . '</p> 
-                        </span> 
-                        <form method="post" action="index.php?action=addToBasket">
-                            <input type="hidden" name="productID" value="'.$this->productID.'"/>
-                            <input type="submit" class="uiButton" value="Add to Basket"/>
-                        </form>
-                    </span>';
-            }
 
-            function getDetailDiv()
-            {
-                echo '<div id='.$this->productID.' class="modal modalProductDetails">
-                <div class="modal-content-product">
-                <span onclick="closeProductModal('.$this->productID.')" id="modalClose'.$this->productID.'" class="close">&times;</span>
-                <img class="productImageModal" src="'.$this->productImagePath.'.jpeg"/>
-                <div class="modalInner">
-                    <h2>'. $this->productName .'</h2>
-                    <p>'. $this->description .'</p>
-                    <p>&pound;'. number_format($this->price, 2) .'</p>
-                </div>
-                <form method="post" action="index.php?action=addToBasket">
-                            <input type="hidden" name="productID" value="'.$this->productID.'"/>
-                            <input type="submit" class="uiButton" value="Add to Basket"/>
-                        </form>
-                </div>
-                </div>';
-            }
         }
      
         class Order
@@ -554,40 +202,20 @@ use mysqli;
                 $this->orderItems = array();
             }
 
-            function getID()
+            function GetID()
             {
                 return $this->orderID;
             }           
 
-            function getDate()
-            {
-                return $this->orderDate;
-            }
 
-            function getCustomerID()
-            {
-                return $this->customerID;
-            }
-
-            public function addDetail(orderDetail $newItem)
+            public function AddDetail(orderDetail $newItem)
             {
                 $this->orderItems[] = $newItem;
             }
 
-            public function removeProductFromBasket(int $itemID)
-            {
-                $this->orderItems[$itemID] = null;
-            }
+       
 
-            public function getAllItems()
-            {
-                return $this->orderItems;
-            }
-
-            function printOrderNumber()
-            {
-                echo '<h2 id="invoiceNumber">'.$this->orderID.'</h2>';
-            }            
+        
         }
 
         class orderDetail
@@ -605,113 +233,18 @@ use mysqli;
                 $this->quantity = $amount;
             }
 
-            function getProduct()
-            {
-                return $this->product;
-            }
 
-            function getID()
-            {
-                return $this->orderItemID;
-            }
 
-            function getQuantity()
-            {
-                return $this->quantity;
-            }
             
         }
 
-        class Basket
-        {
-            private $basketItems;
-
-            private int $basketID;
-
-            function __construct(int $basketID)
-            {
-                $this->basketID = $basketID;
-                $this->basketItems = array();
-            }
-
-            public function getID()
-            {
-                return $this->basketID;
-            }
-
-            public function addProductToBasket(basketItem $newItem)
-            {
-                $this->basketItems[] = $newItem;
-            }
-
-            public function removeProductFromBasket(int $itemID)
-            {
-                $this->basketItems[$itemID] = null;
-            }
-
-            public function getAllItems()
-            {
-                return $this->basketItems;
-            }
-        }
-
-        class basketItem
-        {
-            private int $basketItemID;
-
-            private Product $product;
-
-            private int $quantity;
-
-            function __construct(int $ID, Product $product, int $amount)
-            {
-                $this->basketItemID = $ID;
-                $this->product = $product;
-                $this->quantity = $amount;
-            }
-
-            function getProduct()
-            {
-                return $this->product;
-            }
-
-            function getID()
-            {
-                return $this->basketItemID;
-            }
-
-            function getQuantity()
-            {
-                return $this->quantity;
-            }
-
-            function getDiv()
-            {
-
-                echo '<div class="basketItem" >
-                        <p class="basketProductName">'.$this->product->getName().'</p>
-                        <form method="post" action="index.php?action=removeFromBasket">
-                            <input type="hidden" name="basketItemID" value="'.$this->basketItemID.'"/>
-                            <input type="submit" class="uiBasketButton" value="Remove"/>
-                        </form>
-                        <p class="basketProductPrice">&pound;'.number_format($this->product->getPrice(), 2).' each</p>
-                        <form method="post" action="index.php?action=changeBasketQuantity">
-                            <input type="hidden" name="basketItemID" value="'.$this->basketItemID.'"/>
-                            <input type="number" class="quantitySelector" name="quantity" value="'.$this->quantity.'"/>
-                            <input type="submit" class="uiBasketButton" value="Update"/>
-                        </form>
-                        <span class="basketItemTotal">
-                            <p>Total:</p>
-                            <p >&pound;'.number_format(($this->product->getPrice()*$this->quantity), 2).'</p>
-                        </span>
-                    </div>';
-            }
-        }
+        
+        
 
         
         session_start();
-        $dbConnect = new dbConnect;
-        $dbConnect->retrieveAllProducts();  
+        $dbConnect = new DBConnect;
+        $dbConnect->RetrieveAllProducts();  
        
 ?>
 
@@ -728,7 +261,7 @@ use mysqli;
 
     <div id="navBar">
         <div id="adminUserName">
-            <?php $dbConnect->checkAuthAndPrintLoggedInUser() ?>
+            <?php $dbConnect->CheckAuthAndPrintLoggedInUser() ?>
         </div>
         <div id="adminLogin">
         <a href="adminLogin.php?action=logout">Logout</a>
@@ -757,13 +290,13 @@ use mysqli;
                     </tr>
                     
                     <?php
-                        foreach($dbConnect->getAllProducts() as $product)
+                        foreach($dbConnect->GetAllProducts() as $product)
                         {                    
                             echo '<tr>
-                            <td>'.$product->getID().'</td>
-                            <td>'.$product->getName().'</td>
-                            <td>'.$dbConnect->getNumberOrdered($product->getID()).'</td>
-                            <td>'.$product->getStock().'</td>
+                            <td>'.$product->GetID().'</td>
+                            <td>'.$product->GetName().'</td>
+                            <td>'.$dbConnect->GetNumberOrdered($product->GetID()).'</td>
+                            <td>'.$product->GetStock().'</td>
                             </tr>';
                         }
                     ?>
