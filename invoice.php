@@ -631,7 +631,7 @@ use mysqli;
                 <?php $dbConnect->getOrderTotal()?>
             </div>
             <div id="customerActionsInv">
-                <button class="uiButton">Print Invoice</button>
+                <button class="uiButton" onclick="window.print()">Print Invoice</button>
                 <form method="post" action="index.php?action=cancel">
                     <input type="submit" class="uiButton" value="Close Invoice" formnovalidate/>
                 </form>
