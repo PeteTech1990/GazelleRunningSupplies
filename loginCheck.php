@@ -4,7 +4,7 @@ use mysqli;
 
 session_start();
 
-class dbConnect
+class DBConnect
         {       
 
             public object $sqlConnection;
@@ -22,7 +22,7 @@ class dbConnect
                 
             }
 
-            function authenticateUser()
+            function AuthenticateUser()
             {
                 $username = $_POST["txtUsername"];
                 $sqlComm = "SELECT * FROM tblUser WHERE username='$username'";
@@ -51,9 +51,9 @@ class dbConnect
 
         }
 
-        $dbConnect = new dbConnect();
+        $dbConnect = new DBConnect();
 
-        if($dbConnect->authenticateUser()){
+        if($dbConnect->AuthenticateUser()){
             $_SESSION["userID"] = $dbConnect->userID;
             header("Location: adminOrders.php?order=1");
         }    
