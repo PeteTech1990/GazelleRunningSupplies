@@ -4,7 +4,7 @@
         session_start();
         
 
-        class dbConnect
+        class DBConnect
         {       
 
             public object $sqlConnection;
@@ -21,7 +21,7 @@
                 
             }
 
-            function retrieveAllProducts()
+            function RetrieveAllProducts()
             {
                 $sqlComm = "SELECT * FROM tblProduct";
                 $sqlReturn = $this->sqlConnection->query($sqlComm);
@@ -36,23 +36,23 @@
                 }  
             }
 
-            function getAllProducts()
+            function GetAllProducts()
             {
                 return $this->allProducts;
             }
 
-            function getProduct(int $productID)
+            function GetProduct(int $productID)
             {
                 foreach($this->allProducts as $product)
                 {
-                    if($product->getID() == $productID)
+                    if($product->GetID() == $productID)
                     {
                         return $product;
                     }
                 }
             }
 
-            function createBasket()
+            function CreateBasket()
             {
                 
                 $dateCreated = date("Y-m-d");
@@ -65,7 +65,7 @@
                 return $basketID;
             }
                 
-            function addToBasket(int $productID)
+            function AddToBasket(int $productID)
             {
                 $basketID = $_SESSION["basketID"];
                 $productExist = false;
@@ -107,14 +107,14 @@
  
             }
 
-            function removeFromBasket(int $basketItemID)
+            function RemoveFromBasket(int $basketItemID)
             {
                 $sqlComm = "DELETE FROM tblBasketItem WHERE basketItemID='$basketItemID'";
                 
                 $this->sqlConnection->query($sqlComm);
             }
 
-            function updateBasket(int $basketItemID, int $quantity)
+            function UpdateBasket(int $basketItemID, int $quantity)
             {
                 if($quantity < 1)
                 {
@@ -128,7 +128,7 @@
                 }
             }
 
-            function destroyBasket()
+            function DestroyBasket()
             {
                 $basketID = $_SESSION["basketID"];
                 $sqlComm = "DELETE FROM tblBasketItem WHERE basketID='$basketID'";
@@ -151,25 +151,25 @@
                 {
                     while($row = $sqlReturn->fetch_assoc())
                     {
-                        $product = $this->getProduct($row["productID"]);
+                        $product = $this->GetProduct($row["productID"]);
                         $newBasketItem = new basketItem($row["basketItemID"],$product , $row["quantity"]);
-                        $this->basket->addProductToBasket($newBasketItem);               
+                        $this->basket->AddProductToBasket($newBasketItem);               
                     }
                 }                
                 
             }
 
-            function getBasketTotal()
+            function GetBasketTotal()
             {
                 $total = 0;
 
                 if($this->basket != null)
                 {
-                if($this->basket->getAllItems() != null)
+                if($this->basket->GetAllItems() != null)
                 {
-                    foreach($this->basket->getAllItems() as $basketItem)
+                    foreach($this->basket->GetAllItems() as $basketItem)
                     {
-                        $total += $basketItem->getProduct()->getPrice()*$basketItem->getQuantity();
+                        $total += $basketItem->GetProduct()->GetPrice()*$basketItem->GetQuantity();
                     }
                 }
             }
@@ -177,7 +177,7 @@
                 echo '<h2>&pound;'.number_format($total, 2).'</h2>';
             }
 
-            function getBasket()
+            function GetBasket()
             {
                 return $this->basket;
             }
@@ -202,50 +202,42 @@
                 $this->stock = $stock;
                 $this->category = $category;
                 $this->description = $description;
-                $this->addProductImagePath("/productImages/" . $this->productID);
+                $this->AddProductImagePath("/productImages/" . $this->productID);
             }
 
-            function addProductImagePath(string $image)
+            function AddProductImagePath(string $image)
             {
                 $this->productImagePath = $image;
             }
 
-            function adjustPrice(float $amount)
-            {
-                $this->price = $amount;
-            }
-
-            function getID()
+            
+            function GetID()
             {
                 return $this->productID;
             }
 
-            function getName()
+            function GetName()
             {
                 return $this->productName;
             }
 
-            function getImagePath()
-            {
-                return $this->productImagePath;
-            }
 
-            function getPrice()
+            function GetPrice()
             {
                 return $this->price;
             }
 
-            function getStock()
+            function GetStock()
             {
                 return $this->stock;
             }
 
-            function getCategory()
+            function GetCategory()
             {
                 return $this->category;
             }
 
-            function getSpan()
+            function GetSpan()
             {
                 echo '<span id=productDetails'.$this->productID.' class="productSpan" >
                         <img onclick="openProductModal('.$this->productID.')" id=productImage'.$this->productID.' class="productImage" src="'.$this->productImagePath.'.jpeg"/>
@@ -260,7 +252,7 @@
                     </span>';
             }
 
-            function getDetailDiv()
+            function GetDetailDiv()
             {
                 echo '<div id='.$this->productID.' class="modal modalProductDetails">
                 <div class="modal-content-product">
@@ -292,32 +284,23 @@
                 $this->basketItems = array();
             }
 
-            public function getID()
-            {
-                return $this->basketID;
-            }
-
-            public function addProductToBasket(basketItem $newItem)
+            public function AddProductToBasket(basketItem $newItem)
             {
                 $this->basketItems[] = $newItem;
             }
 
-            public function removeProductFromBasket(int $itemID)
-            {
-                $this->basketItems[$itemID] = null;
-            }
 
-            public function getAllItems()
+            public function GetAllItems()
             {
                 return $this->basketItems;
             }
 
-            public function getItemCount()
+            public function GetItemCount()
             {
                 $total = 0;
                 foreach($this->basketItems as $basketItem)
                 {
-                    $total += $basketItem->getQuantity();
+                    $total += $basketItem->GetQuantity();
                 }
                 return $total;
             }
@@ -338,31 +321,26 @@
                 $this->quantity = $amount;
             }
 
-            function getProduct()
+            function GetProduct()
             {
                 return $this->product;
             }
 
-            function getID()
-            {
-                return $this->basketItemID;
-            }
-
-            function getQuantity()
+            function GetQuantity()
             {
                 return $this->quantity;
             }
 
-            function getDiv()
+            function GetDiv()
             {
 
                 echo '<div class="basketItem" >
-                        <p class="basketProductName">'.$this->product->getName().'</p>
+                        <p class="basketProductName">'.$this->product->GetName().'</p>
                         <form method="post" action="index.php?action=removeFromBasket">
                             <input type="hidden" name="basketItemID" value="'.$this->basketItemID.'"/>
                             <input type="submit" class="uiBasketButton" value="Remove"/>
                         </form>
-                        <p class="basketProductPrice">&pound;'.number_format($this->product->getPrice(), 2).' each</p>
+                        <p class="basketProductPrice">&pound;'.number_format($this->product->GetPrice(), 2).' each</p>
                         <form method="post" action="index.php?action=changeBasketQuantity">
                             <input type="hidden" name="basketItemID" value="'.$this->basketItemID.'"/>
                             <input type="number" class="quantitySelector" name="quantity" value="'.$this->quantity.'"/>
@@ -370,13 +348,13 @@
                         </form>
                         <span class="basketItemTotal">
                             <p>Total:</p>
-                            <p >&pound;'.number_format(($this->product->getPrice()*$this->quantity), 2).'</p>
+                            <p >&pound;'.number_format(($this->product->GetPrice()*$this->quantity), 2).'</p>
                         </span>
                     </div>';
             }
         }
         
-        $dbConnect = new dbConnect;
+        $dbConnect = new DBConnect;
         $dbConnect->retrieveAllProducts();
         
         
@@ -434,9 +412,9 @@
     
         
         <?php 
-            foreach($dbConnect->getAllProducts() as $product)
+            foreach($dbConnect->GetAllProducts() as $product)
             {
-                $product->getDetailDiv();
+                $product->GetDetailDiv();
             }       
         ?>
          
@@ -449,13 +427,13 @@
             <h2>Your Shopping Basket</h2>
             <div class="modalInner" class="basketItems">
                 <?php 
-                   if($dbConnect->getBasket() != null)
+                   if($dbConnect->GetBasket() != null)
                    {
-                        if($dbConnect->getBasket()->getAllItems() != null)
+                        if($dbConnect->GetBasket()->GetAllItems() != null)
                         {
-                            foreach($dbConnect->getBasket()->getAllItems() as $basketItem)
+                            foreach($dbConnect->GetBasket()->GetAllItems() as $basketItem)
                             {
-                                $basketItem->getDiv();
+                                $basketItem->GetDiv();
                             }
                         }
                     }   
@@ -463,15 +441,15 @@
             </div>
             <span class="basketTotal">
                 <h2>Basket Total</h2>
-                <?php $dbConnect->getBasketTotal()?>
+                <?php $dbConnect->GetBasketTotal()?>
             </span>            
              
             <?php
-           if($dbConnect->getBasket() != null)
+           if($dbConnect->GetBasket() != null)
            {
-                if($dbConnect->getBasket()->getAllItems() != null)
+                if($dbConnect->GetBasket()->GetAllItems() != null)
                     {
-                        if($dbConnect->getBasket()->getItemCount() > 1)
+                        if($dbConnect->GetBasket()->GetItemCount() > 1)
                         {
                             echo ' <button class="uiButton" onclick="launchOrderForm()">Proceed To Order Form</button>';
                         }
@@ -519,11 +497,11 @@
                         
                         <?php  
 
-                            foreach($dbConnect->allProducts as $item)
+                            foreach($dbConnect->GetAllProducts() as $item)
                             {
-                                if($item->getCategory() == "Shoes")
+                                if($item->GetCategory() == "Shoes")
                                 {
-                                $item->getSpan();
+                                $item->GetSpan();
                                 }
                             }                               
                             
@@ -536,11 +514,11 @@
                 <div class="panel">
                 <?php  
 
-                    foreach($dbConnect->allProducts as $item)
+                    foreach($dbConnect->GetAllProducts() as $item)
                     {
-                        if($item->getCategory() == "Protective Wear")
+                        if($item->GetCategory() == "Protective Wear")
                         {
-                        $item->getSpan();
+                        $item->GetSpan();
                         }
                     }                               
 
@@ -551,11 +529,11 @@
                 <div class="panel">
                 <?php  
 
-                    foreach($dbConnect->allProducts as $item)
+                    foreach($dbConnect->GetAllProducts() as $item)
                     {
-                        if($item->getCategory() == "Clothes")
+                        if($item->GetCategory() == "Clothes")
                         {
-                        $item->getSpan();
+                        $item->GetSpan();
                         }
                     }                               
 
@@ -566,11 +544,11 @@
                 <div class="panel">
                 <?php  
 
-                    foreach($dbConnect->allProducts as $item)
+                    foreach($dbConnect->GetAllProducts() as $item)
                     {
-                        if($item->getCategory() == "Electronics")
+                        if($item->GetCategory() == "Electronics")
                         {
-                        $item->getSpan();
+                        $item->GetSpan();
                         }
                     }                               
 
@@ -581,11 +559,11 @@
                 <div class="panel">
                 <?php  
 
-                    foreach($dbConnect->allProducts as $item)
+                    foreach($dbConnect->GetAllProducts() as $item)
                     {
-                        if($item->getCategory() == "Headgear")
+                        if($item->GetCategory() == "Headgear")
                         {
-                        $item->getSpan();
+                        $item->GetSpan();
                         }
                     }                               
 
