@@ -5,14 +5,10 @@
 
         
 
-        class dbConnect
+        class DBConnect
         {       
 
             public object $sqlConnection;
-            var $allProducts;
-            var $basket;
-
-            var $failLoginMessage;
 
             function __construct()
             {
@@ -24,165 +20,7 @@
                 
             }
 
-            function retrieveAllProducts()
-            {
-                $sqlComm = "SELECT * FROM tblProduct";
-                $sqlReturn = $this->sqlConnection->query($sqlComm);
-    
-                if($sqlReturn->num_rows > 0)
-                {
-                    while($row = $sqlReturn->fetch_assoc())
-                    {
-                        $item = new Product($row["productID"], $row["productName"], $row["price"], $row["stock"], $row["category"], $row["description"]);                                                                         
-                        $this->allProducts[] = $item;                
-                    }
-                }  
-            }
-
-            function getAllProducts()
-            {
-                return $this->allProducts;
-            }
-
-            function getProduct(int $productID)
-            {
-                foreach($this->allProducts as $product)
-                {
-                    if($product->getID() == $productID)
-                    {
-                        return $product;
-                    }
-                }
-            }
-
-            function createBasket()
-            {
-                $dateCreated = date("Y/m/d");
-                $sqlComm = "INSERT INTO tblBasket (dateCreated) VALUES ('.$dateCreated.')";
-                $sqlReturn = $this->sqlConnection->query($sqlComm);
-    
-                $basketID = mysqli_insert_id($this->sqlConnection);
-
-                return $basketID;
-            }
-                
-            function addToBasket(int $productID)
-            {
-                $basketID = $_SESSION["basketID"];
-                $productExist = false;
-                $currentQuantity = 0;
-                $currentBasketItemID = 0;
-
-                $sqlComm = "SELECT * FROM tblBasketItem WHERE basketID='.$basketID.'";
-                $sqlReturn = $this->sqlConnection->query($sqlComm);
-    
-                if($sqlReturn->num_rows > 0)
-                {
-                    while($row = $sqlReturn->fetch_assoc())
-                    {
-                        if($row["productID"] == $productID)
-                        {
-                            $productExist = true;
-                            $currentQuantity = (int)$row["quantity"];
-                            $currentBasketItemID = $row["basketItemID"];
-                        }              
-                    }
-                }                
-
-                if($productExist)
-                {
-                    $newQuantity = ($currentQuantity + 1);
-
-                    $sqlComm = "UPDATE tblBasketItem SET quantity='$newQuantity' WHERE basketItemID='$currentBasketItemID'";
-                    $this->sqlConnection->query($sqlComm);
-                    
-                    
-                }
-                else
-                {
-                    $sqlComm = "INSERT INTO tblBasketItem (productID, quantity, basketID) VALUES ('.$productID.', 1, '.$basketID.')";
-               
-                    $this->sqlConnection->query($sqlComm);
-
-                }
- 
-            }
-
-            function removeFromBasket(int $basketItemID)
-            {
-                $sqlComm = "DELETE FROM tblBasketItem WHERE basketItemID='$basketItemID'";
-                
-                $this->sqlConnection->query($sqlComm);
-            }
-
-            function updateBasket(int $basketItemID, int $quantity)
-            {
-                if($quantity < 1)
-                {
-                    $this->removeFromBasket($basketItemID);
-                }
-                else
-                {
-                    $sqlComm = "UPDATE tblBasketItem SET quantity='$quantity' WHERE basketItemID='$basketItemID'";
-                
-                    $this->sqlConnection->query($sqlComm);
-                }
-            }
-
-            function destroyBasket()
-            {
-                $basketID = $_SESSION["basketID"];
-                $sqlComm = "DELETE FROM tblBasketItem WHERE basketID='$basketID'";
-                
-                $this->sqlConnection->query($sqlComm);
-                $sqlComm = "DELETE FROM tblBasket WHERE basketID='$basketID'";
-                
-                $this->sqlConnection->query($sqlComm);
-            }
-
-            function InstantiateAndPopulateBasket()
-            {
-                $basketID = $_SESSION["basketID"];
-                $this->basket = new Basket($basketID);
-
-                $sqlComm = "SELECT * FROM tblBasketItem WHERE basketID='.$basketID.'";
-                $sqlReturn = $this->sqlConnection->query($sqlComm);
-    
-                if($sqlReturn->num_rows > 0)
-                {
-                    while($row = $sqlReturn->fetch_assoc())
-                    {
-                        $product = $this->getProduct($row["productID"]);
-                        $newBasketItem = new basketItem($row["basketItemID"],$product , $row["quantity"]);
-                        $this->basket->addProductToBasket($newBasketItem);               
-                    }
-                }                
-                
-            }
-
-            function getBasketTotal()
-            {
-                $total = 0;
-
-                if($this->basket->getAllItems() != null)
-                {
-                    foreach($this->basket->getAllItems() as $basketItem)
-                    {
-                        $total += $basketItem->getProduct()->getPrice()*$basketItem->getQuantity();
-                    }
-                }
-
-                echo '<h2>&pound;'.number_format($total, 2).'</h2>';
-            }
-
-            function getBasket()
-            {
-                return $this->basket;
-            }
-
-            
-
-            function printLoginFailMessage()
+            function PrintLoginFailMessage()
             {
                 if(isset($_SESSION["failLoginMessage"]))
                 {
@@ -193,18 +31,15 @@
 
         
         session_start();
-        $dbConnect = new dbConnect;        
+        $dbConnect = new DBConnect;        
         
         if(isset($_GET["action"]))
         {
             session_destroy();
+            session_start();
         }
-        session_start();
-
-
         
 
-        
 ?>
 
 <!DOCTYPE html>
@@ -234,7 +69,7 @@
     <div id="mainContent">        
         
         <div id="userDetails">
-            <?php $dbConnect->printLoginFailMessage() ?>
+            <?php $dbConnect->PrintLoginFailMessage() ?>
             <h2>Enter your username and password</h2>
             <form id="userDetailsForm" method="post" action="loginCheck.php">
                 <span class="inputAreasLogin" id="usernameInput"><label class="loginLabel" for="txtUsername">Username:</label><input name="txtUsername" required/></span>
