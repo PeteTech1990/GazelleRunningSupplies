@@ -4,7 +4,7 @@
         
         
 
-        class dbConnect
+        class DBConnect
         {       
 
             public object $sqlConnection;
@@ -21,7 +21,7 @@
                 
             }
 
-            function retrieveAllProducts()
+            function RetrieveAllProducts()
             {
                 $sqlComm = "SELECT * FROM tblProduct";
                 $sqlReturn = $this->sqlConnection->query($sqlComm);
@@ -36,16 +36,16 @@
                 }  
             }
 
-            function getAllProducts()
+            function GetAllProducts()
             {
                 return $this->allProducts;
             }
 
-            function getProduct(int $productID)
+            function GetProduct(int $productID)
             {
                 foreach($this->allProducts as $product)
                 {
-                    if($product->getID() == $productID)
+                    if($product->GetID() == $productID)
                     {
                         return $product;
                     }
@@ -66,30 +66,30 @@
                 {
                     while($row = $sqlReturn->fetch_assoc())
                     {
-                        $product = $this->getProduct($row["productID"]);
+                        $product = $this->GetProduct($row["productID"]);
                         $newBasketItem = new basketItem($row["basketItemID"],$product , $row["quantity"]);
-                        $this->basket->addProductToBasket($newBasketItem);               
+                        $this->basket->AddProductToBasket($newBasketItem);               
                     }
                 }                
                 
             }
 
-            function getBasketTotal()
+            function GetBasketTotal()
             {
                 $total = 0;
 
-                if($this->basket->getAllItems() != null)
+                if($this->basket->GetAllItems() != null)
                 {
-                    foreach($this->basket->getAllItems() as $basketItem)
+                    foreach($this->basket->GetAllItems() as $basketItem)
                     {
-                        $total += $basketItem->getProduct()->getPrice()*$basketItem->getQuantity();
+                        $total += $basketItem->GetProduct()->GetPrice()*$basketItem->GetQuantity();
                     }
                 }
 
                 echo '<h2>&pound;'.number_format($total, 2).'</h2>';
             }
 
-            function getBasket()
+            function GetBasket()
             {
                 return $this->basket;
             }
@@ -114,82 +114,29 @@
                 $this->stock = $stock;
                 $this->category = $category;
                 $this->description = $description;
-                $this->addProductImagePath("/productImages/" . $this->productID);
+                $this->AddProductImagePath("/productImages/" . $this->productID);
             }
 
-            function addProductImagePath(string $image)
+            function AddProductImagePath(string $image)
             {
                 $this->productImagePath = $image;
             }
-
-            function adjustPrice(float $amount)
-            {
-                $this->price = $amount;
-            }
-
-            function getID()
+            
+            function GetID()
             {
                 return $this->productID;
             }
 
-            function getName()
+            function GetName()
             {
                 return $this->productName;
             }
 
-            function getImagePath()
-            {
-                return $this->productImagePath;
-            }
-
-            function getPrice()
+            function GetPrice()
             {
                 return $this->price;
             }
 
-            function getStock()
-            {
-                return $this->stock;
-            }
-
-            function getCategory()
-            {
-                return $this->category;
-            }
-
-            function getSpan()
-            {
-                echo '<span id=productDetails'.$this->productID.' class="productSpan" >
-                        <img onclick="openProductModal('.$this->productID.')" id=productImage'.$this->productID.' class="productImage" src="'.$this->productImagePath.'.jpeg"/>
-                        <span class="productDetails">
-                            <p id="productName">' . $this->productName . '</p>
-                            <p id="productPrice">&pound;' . number_format($this->price, 2) . '</p> 
-                        </span> 
-                        <form method="post" action="index.php?action=addToBasket">
-                            <input type="hidden" name="productID" value="'.$this->productID.'"/>
-                            <input type="submit" class="uiButton" value="Add to Basket"/>
-                        </form>
-                    </span>';
-            }
-
-            function getDetailDiv()
-            {
-                echo '<div id='.$this->productID.' class="modal modalProductDetails">
-                <div class="modal-content-product">
-                <span onclick="closeProductModal('.$this->productID.')" id="modalClose'.$this->productID.'" class="close">&times;</span>
-                <img class="productImageModal" src="'.$this->productImagePath.'.jpeg"/>
-                <div class="modalInner">
-                    <h2>'. $this->productName .'</h2>
-                    <p>'. $this->description .'</p>
-                    <p>&pound;'. number_format($this->price, 2) .'</p>
-                </div>
-                <form method="post" action="index.php?action=addToBasket">
-                            <input type="hidden" name="productID" value="'.$this->productID.'"/>
-                            <input type="submit" class="uiButton" value="Add to Basket"/>
-                        </form>
-                </div>
-                </div>';
-            }
         }
      
         class Basket
@@ -204,22 +151,14 @@
                 $this->basketItems = array();
             }
 
-            public function getID()
-            {
-                return $this->basketID;
-            }
 
-            public function addProductToBasket(basketItem $newItem)
+            public function AddProductToBasket(basketItem $newItem)
             {
                 $this->basketItems[] = $newItem;
             }
 
-            public function removeProductFromBasket(int $itemID)
-            {
-                $this->basketItems[$itemID] = null;
-            }
-
-            public function getAllItems()
+           
+            public function GetAllItems()
             {
                 return $this->basketItems;
             }
@@ -240,46 +179,20 @@
                 $this->quantity = $amount;
             }
 
-            function getProduct()
+            function GetProduct()
             {
                 return $this->product;
             }
 
-            function getID()
-            {
-                return $this->basketItemID;
-            }
-
-            function getQuantity()
+            function GetQuantity()
             {
                 return $this->quantity;
             }
-
-            function getDiv()
-            {
-
-                echo '<div class="basketItem" >
-                        <p class="basketProductName">'.$this->product->getName().'</p>
-                        <form method="post" action="index.php?action=removeFromBasket">
-                            <input type="hidden" name="basketItemID" value="'.$this->basketItemID.'"/>
-                            <input type="submit" class="uiBasketButton" value="Remove"/>
-                        </form>
-                        <p class="basketProductPrice">&pound;'.number_format($this->product->getPrice(), 2).' each</p>
-                        <form method="post" action="index.php?action=changeBasketQuantity">
-                            <input type="hidden" name="basketItemID" value="'.$this->basketItemID.'"/>
-                            <input type="number" class="quantitySelector" name="quantity" value="'.$this->quantity.'"/>
-                            <input type="submit" class="uiBasketButton" value="Update"/>
-                        </form>
-                        <span class="basketItemTotal">
-                            <p>Total:</p>
-                            <p >&pound;'.number_format(($this->product->getPrice()*$this->quantity), 2).'</p>
-                        </span>
-                    </div>';
-            }
+            
         }
         
-        $dbConnect = new dbConnect;
-        $dbConnect->retrieveAllProducts();
+        $dbConnect = new DBConnect;
+        $dbConnect->RetrieveAllProducts();
         session_start();
         $dbConnect->InstantiateAndPopulateBasket();
 
@@ -320,12 +233,12 @@
                     <th>Item Total</th>
                 </tr>
                 <?php
-                    foreach($dbConnect->getBasket()->getAllItems() as $basketItem)
+                    foreach($dbConnect->GetBasket()->GetAllItems() as $basketItem)
                         {
                             echo '<tr>
-                                <td>'.$basketItem->getProduct()->getName().'</td>
-                                <td>'.$basketItem->getQuantity().'</td>
-                                <td>&pound;'.number_format($basketItem->getProduct()->getPrice()*$basketItem->getQuantity(), 2).'</td>
+                                <td>'.$basketItem->GetProduct()->GetName().'</td>
+                                <td>'.$basketItem->GetQuantity().'</td>
+                                <td>&pound;'.number_format($basketItem->GetProduct()->GetPrice()*$basketItem->GetQuantity(), 2).'</td>
                                 </tr>';
                         }
                     ?>
@@ -333,7 +246,7 @@
             </div>
             <span id="orderTotalLabels">
                 <h2>Order Total:</h2>
-                <?php $dbConnect->getBasketTotal()?>
+                <?php $dbConnect->GetBasketTotal()?>
             </span>
         </div>
         <div id="customerDetails">
