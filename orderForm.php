@@ -238,7 +238,8 @@
                             echo '<tr>
                                 <td>'.$basketItem->GetProduct()->GetName().'</td>
                                 <td>'.$basketItem->GetQuantity().'</td>
-                                <td>&pound;'.number_format($basketItem->GetProduct()->GetPrice()*$basketItem->GetQuantity(), 2).'</td>
+                                <td>&pound;'.number_format($basketItem->GetProduct()->GetPrice()*$basketItem->GetQuantity(), 2).
+                                '</td>
                                 </tr>';
                         }
                     ?>

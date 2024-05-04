@@ -29,7 +29,9 @@
                 {
                     while($row = $sqlReturn->fetch_assoc())
                     {
-                        $item = new Product($row["productID"], $row["productName"], $row["price"], $row["stock"], $row["category"], $row["description"]);                                                                         
+                        $item = new Product($row["productID"], $row["productName"], $row["price"], $row["stock"], 
+                        $row["category"], $row["description"]);
+
                         $this->allProducts[] = $item;                
                     }
                 }  
@@ -257,7 +259,10 @@
             function GetSpan()
             {
                 echo '<span id=productDetails'.$this->productID.' class="productSpan" >
-                        <img onclick="openProductModal('.$this->productID.')" id=productImage'.$this->productID.' class="productImage" src="'.$this->productImagePath.'.jpeg"/>
+                
+                        <img onclick="openProductModal('.$this->productID.')" 
+                        id=productImage'.$this->productID.' class="productImage" src="'.$this->productImagePath.'.jpeg"/>
+
                         <span class="productDetails">
                             <p id="productName">' . $this->productName . '</p>
                             <p id="productPrice">&pound;' . number_format($this->price, 2) . '</p> 
@@ -402,13 +407,13 @@
         
         session_start();
         $dbConnect = new DBConnect;
-        $dbConnect->retrieveAllProducts();
+        $dbConnect->RetrieveAllProducts();
 
         //https://stackoverflow.com/questions/44887880/store-object-in-php-session
 
         if(!isset($_SESSION["basketID"]))
         {            
-            $_SESSION["basketID"] = $dbConnect->createBasket();
+            $_SESSION["basketID"] = $dbConnect->CreateBasket();
             $dbConnect->InstantiateBasket();
         }
         else
