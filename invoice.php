@@ -106,24 +106,45 @@ use mysqli;
             
             function createCustomer()
             {
-                $customerName = $_POST["txtFullName"];
-                $customerAdd1 = $_POST["txtAddress1"];
-                $customerAdd2 = $_POST["txtAddress2"];
-                $customerCity = $_POST["txtCity"];
-                $customerCounty = $_POST["txtCounty"];
-                $customerPostcode = $_POST["txtPostcode"];
-                $customerNumber = $_POST["txtPhone"];
-                $customerEmail = $_POST["txtEmail"];
+                while(true)
+                {
+                    //https://stackoverflow.com/questions/37142882/php-check-if-string-contains-space-between-words-not-at-beginning-or-end
 
-                $insertString = "'$customerName', '$customerAdd1', '$customerAdd2', '$customerCity', '$customerCounty', '$customerPostcode', '$customerNumber', '$customerEmail'";
-                
-                $sqlComm = "INSERT INTO tblCustomer (customerName, addressLine1, addressLine2, city, county, postcode, contactNumber, emailAddress) VALUES ($insertString)";
-               
-                $this->sqlConnection->query($sqlComm);
+                    if(trim($_POST["txtFullName"]) == ""){header("Location:orderForm.php?invalid=blankName");break;}
+                    else{$customerName = trim($_POST["txtFullName"]);}
+                    if(trim($_POST["txtAddress1"]) == ""){header("Location:orderForm.php?invalid=blankAddr");break;}
+                    else{$customerAdd1 = $_POST["txtAddress1"];}
+                    if(trim($_POST["txtAddress2"]) == ""){header("Location:orderForm.php?invalid=blankAddr");break;}
+                    else{$customerAdd2 = $_POST["txtAddress2"];}
+                    if(trim($_POST["txtCity"]) == ""){header("Location:orderForm.php?invalid=blankCity");break;}
+                    else{$customerCity = $_POST["txtCity"];}
+                    if(trim($_POST["txtCounty"]) == ""){header("Location:orderForm.php?invalid=blankCounty");break;}
+                    else{$customerCounty = $_POST["txtCounty"];}
 
-                $customerID = mysqli_insert_id($this->sqlConnection);
+                    //https://ideal-postcodes.co.uk/guides/postcode-validation
+                    //
+                    if(trim($_POST["txtPostcode"]) == ""){header("Location:orderForm.php?invalid=blankPost");break;}
+                    else if(!preg_match("/^[a-z]{1,2}\d[a-z\d]?\s*\d[a-z]{2}$/i", trim($_POST["txtPostcode"])))
+                    {header("Location:orderForm.php?invalid=badPost");break;}
+                    else{$customerPostcode = $_POST["txtPostcode"];}
 
-                $this->customer = new Customer($customerID, $customerName, $customerAdd1, $customerAdd2, $customerCity, $customerCounty, $customerPostcode, $customerNumber, $customerEmail);
+
+                    if(trim($_POST["txtPhone"]) == ""){header("Location:orderForm.php?invalid=blankPhone");break;}
+                    else{$customerNumber = $_POST["txtPhone"];}
+                    if(trim($_POST["txtEmail"]) == ""){header("Location:orderForm.php?invalid=blankEmail");break;}
+                    else{$customerEmail = $_POST["txtEmail"];}
+
+                    $insertString = "'$customerName', '$customerAdd1', '$customerAdd2', '$customerCity', '$customerCounty', '$customerPostcode', '$customerNumber', '$customerEmail'";
+                    
+                    $sqlComm = "INSERT INTO tblCustomer (customerName, addressLine1, addressLine2, city, county, postcode, contactNumber, emailAddress) VALUES ($insertString)";
+                    
+                    $this->sqlConnection->query($sqlComm);
+
+                    $customerID = mysqli_insert_id($this->sqlConnection);
+
+                    $this->customer = new Customer($customerID, $customerName, $customerAdd1, $customerAdd2, $customerCity, $customerCounty, $customerPostcode, $customerNumber, $customerEmail);
+                    break;
+                }
             }
 
             function createOrder()

@@ -1,7 +1,6 @@
 <?php
         namespace gazelleRunningSupplies;
         use mysqli;
-        session_start();
         
 
         class DBConnect
@@ -116,15 +115,26 @@
 
             function UpdateBasket(int $basketItemID, int $quantity)
             {
+                $maxStock = $this->basket->GetItem($basketItemID)->GetProduct()->GetStock();
+
                 if($quantity < 1)
                 {
                     $this->removeFromBasket($basketItemID);
                 }
                 else
                 {
-                    $sqlComm = "UPDATE tblBasketItem SET quantity='$quantity' WHERE basketItemID='$basketItemID'";
+                    if($maxStock >= $quantity)
+                    {
+                        $sqlComm = "UPDATE tblBasketItem SET quantity='$quantity' WHERE basketItemID='$basketItemID'";
                 
-                    $this->sqlConnection->query($sqlComm);
+                        $this->sqlConnection->query($sqlComm);
+                    }
+                    else
+                    {
+                        $sqlComm = "UPDATE tblBasketItem SET quantity='$maxStock' WHERE basketItemID='$basketItemID'";
+                
+                        $this->sqlConnection->query($sqlComm);
+                    }
                 }
             }
 
@@ -139,10 +149,17 @@
                 $this->sqlConnection->query($sqlComm);
             }
 
-            function InstantiateAndPopulateBasket()
+            function InstantiateBasket()
             {
                 $basketID = $_SESSION["basketID"];
-                $this->basket = new Basket($basketID);
+                $this->basket = new Basket($basketID);                     
+                
+            }
+
+            function PopulateBasket()
+            {
+                $basketID = $this->basket->GetID();
+                $this->basket->Clear();
 
                 $sqlComm = "SELECT * FROM tblBasketItem WHERE basketID='$basketID'";
                 $sqlReturn = $this->sqlConnection->query($sqlComm);
@@ -289,10 +306,25 @@
                 $this->basketItems[] = $newItem;
             }
 
+            public function GetID()
+            {
+                return $this->basketID;
+            }
 
             public function GetAllItems()
             {
                 return $this->basketItems;
+            }
+
+            public function GetItem(int $basketItemID)
+            {
+                foreach($this->basketItems as $basketItem)
+                {
+                    if ($basketItem->GetID() == $basketItemID)
+                    {
+                        return $basketItem;
+                    }
+                }
             }
 
             public function GetItemCount()
@@ -303,6 +335,11 @@
                     $total += $basketItem->GetQuantity();
                 }
                 return $total;
+            }
+
+            public function Clear()
+            {
+                $this->basketItems = array();
             }
         }
 
@@ -331,6 +368,11 @@
                 return $this->quantity;
             }
 
+            function GetID()
+            {
+                return $this->basketItemID;
+            }
+
             function GetDiv()
             {
 
@@ -340,10 +382,13 @@
                             <input type="hidden" name="basketItemID" value="'.$this->basketItemID.'"/>
                             <input type="submit" class="uiBasketButton" value="Remove"/>
                         </form>
+                        <span>
                         <p class="basketProductPrice">&pound;'.number_format($this->product->GetPrice(), 2).' each</p>
+                        <p>('.$this->product->GetStock().' available)</p>
+                        </span>
                         <form method="post" action="index.php?action=changeBasketQuantity">
                             <input type="hidden" name="basketItemID" value="'.$this->basketItemID.'"/>
-                            <input type="number" class="quantitySelector" name="quantity" value="'.$this->quantity.'"/>
+                            <label for="quantitySelector">Quantity:</label><input type="number" id="quantitySelector" class="quantitySelector" name="quantity" value="'.$this->quantity.'"/>
                             <input type="submit" class="uiBasketButton" value="Update"/>
                         </form>
                         <span class="basketItemTotal">
@@ -354,9 +399,23 @@
             }
         }
         
+        
+        session_start();
         $dbConnect = new DBConnect;
         $dbConnect->retrieveAllProducts();
-        
+
+        //https://stackoverflow.com/questions/44887880/store-object-in-php-session
+
+        if(!isset($_SESSION["basketID"]))
+        {            
+            $_SESSION["basketID"] = $dbConnect->createBasket();
+            $dbConnect->InstantiateBasket();
+        }
+        else
+        {
+            $dbConnect->InstantiateBasket(); 
+            $dbConnect->PopulateBasket();            
+        }
         
         //https://phppot.com/php/simple-php-shopping-cart/
         if(!empty($_GET["action"]))
@@ -364,13 +423,19 @@
             switch($_GET["action"])
             {
                 case "addToBasket":
-                    $dbConnect->addToBasket($_POST["productID"]);                
+                    $dbConnect->addToBasket($_POST["productID"]);
+                                     
                     break;
                 case "removeFromBasket":
                     $dbConnect->removeFromBasket($_POST["basketItemID"]);
+                     
                     break;
                 case "changeBasketQuantity":
-                    $dbConnect->updateBasket($_POST["basketItemID"], $_POST["quantity"]);
+                    if($_POST["quantity"] != "")
+                    {                        
+                        $dbConnect->updateBasket($_POST["basketItemID"], $_POST["quantity"]);
+                    }
+                     
                     break;
                 case "cancel":
                     $dbConnect->destroyBasket();
@@ -381,16 +446,7 @@
             }
         }
 
-        //https://stackoverflow.com/questions/44887880/store-object-in-php-session
-
-        if(!isset($_SESSION["basketID"]))
-        {            
-            $_SESSION["basketID"] = $dbConnect->createBasket();
-        }
-        else
-        {
-            $dbConnect->InstantiateAndPopulateBasket();            
-        }
+        $dbConnect->PopulateBasket();
 
         
 ?>

@@ -72,9 +72,9 @@
             <?php $dbConnect->PrintLoginFailMessage() ?>
             <h2>Enter your username and password</h2>
             <form id="userDetailsForm" method="post" action="loginCheck.php">
-                <span class="inputAreasLogin" id="usernameInput"><label class="loginLabel" for="txtUsername">Username:</label><input name="txtUsername" required/></span>
-                <span class="inputAreasLogin" id="passwordInput"><label class="loginLabel" id="passwordLabel" for="txtPassword">Password:</label><input type="password" name="txtPassword" required/></span>                
-                <input type="submit" name="Login"  class="uiButton"/>
+                <span class="inputAreasLogin" id="usernameInput"><label class="loginLabel" for="txtUsername">Username:</label><input name="txtUsername" required maxlength="20"/></span>
+                <span class="inputAreasLogin" id="passwordInput"><label class="loginLabel" id="passwordLabel" for="txtPassword">Password:</label><input type="password" name="txtPassword" required maxlength="20"/></span>                
+                <input type="submit" name="Login" value="Login"  class="uiButton"/>
             </form>
             
         </div>

@@ -251,13 +251,45 @@
         </div>
         <div id="customerDetails">
             <h2>Customer Details</h2>
+            <?php
+                if(isset($_GET["invalid"]))
+                {
+                    switch ($_GET["invalid"])
+                    {
+                        case "blankName":
+                            echo '<p id="invalidDetails">*** Please enter a name. ***</p>';
+                            break;                        
+                        case "blankAddr":
+                            echo '<p id="invalidDetails">*** Please enter address details. ***</p>';
+                            break;
+                        case "blankCity":
+                            echo '<p id="invalidDetails">*** Please enter a city. ***</p>';
+                            break;
+                        case "blankCounty":
+                            echo '<p id="invalidDetails">*** Please enter a county. ***</p>';
+                            break;
+                        case "blankPost":
+                            echo '<p id="invalidDetails">*** Please enter a postcode. ***</p>';
+                            break;
+                        case "badPost":
+                            echo '<p id="invalidDetails">*** Please enter a valid postcode. ***</p>';
+                            break;
+                        case "blankPhone":
+                            echo '<p id="invalidDetails">*** Please enter a contact number. ***</p>';
+                            break;
+                        case "blankEmail":
+                            echo '<p id="invalidDetails">*** Please enter an email address. ***</p>';
+                            break;
+                    }
+                }
+            ?>
             <form id="detailsForm" method="post" action="invoice.php">
-                <span class="inputAreas" id="customerNameInput"><label for="txtFullName">Full Name: </label><input name="txtFullName" required/></span>
+                <span class="inputAreas" id="customerNameInput"><label for="txtFullName">Full Name: </label><input name="txtFullName" required title="Please enter a name for this order"/></span>
                 <span class="inputAreas" id="address1Input"><label for="txtAddress1">Address Line 1: </label><input name="txtAddress1" required/></span>
                 <span class="inputAreas" id="address2Input"><label for="txtAddress2">Address Line 2: </label><input name="txtAddress2" required/></span>
                 <span class="inputAreas" id="cityInput"><label for="txtCity">City: </label><input name="txtCity" required/></span>
                 <span class="inputAreas" id="countyInput"><label for="txtCounty">County: </label><input name="txtCounty" required/></span>
-                <span class="inputAreas" id="postcodeInput"><label for="txtPostcode">Postcode: </label><input name="txtPostcode" required maxlength=7 /></span>
+                <span class="inputAreas" id="postcodeInput"><label for="txtPostcode">Postcode: </label><input name="txtPostcode" required maxlength=8 /></span>
                 <span class="inputAreas" id="phoneInput"><label for="txtPhone">Contact Number: </label><input type="number" name="txtPhone" required maxlength=11 /></span>
                 <span class="inputAreas" id="emailInput"><label for="txtEmail">Email Address: </label><input type="email" name="txtEmail" required /></span>
             

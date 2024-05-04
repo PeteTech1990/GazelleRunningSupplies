@@ -245,6 +245,10 @@ footer {
     display:flex;
 }
 
+#invalidDetails {
+    color:#FF0000;
+}
+
 .inputAreas {
     float:right;
 
