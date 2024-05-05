@@ -61,19 +61,6 @@ use mysqli;
             }
 
 
-
-            
-         
-           
-
-            
-           
-
-            
-                
-
-            
-
             function CheckAuthAndPrintLoggedInUser()
             {
                 if(isset($_SESSION["userID"]))

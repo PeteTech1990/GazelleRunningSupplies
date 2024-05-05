@@ -95,12 +95,6 @@ use mysqli;
             }
 
 
-     
-
-
-
-            
-
             function GetOrderTotal(Order $order)
             {
                 $total = 0;
@@ -474,13 +468,16 @@ use mysqli;
         </div>
         <div id="orderBreakdown">
             <h2>All Current Orders</h2>
-            <?php if(!$dbConnect->AreValidDates()){echo '<p id="invalidDetails">*** Error: the FROM date cannot be later than the TO date. Please adjust this.</p>';} ?>
+            <?php if(!$dbConnect->AreValidDates()){echo '<p id="invalidDetails">*** Error: the FROM date 
+                cannot be later than the TO date. Please adjust this.</p>';} ?>
             <div id="ordersTableDiv">
                 <span id="dateRange">
                     <p>Filter orders by date</p>   
                     <form method="post">              
-                        <label for="dateFrom">From:</label><input type="date" name="dateFrom" value="<?php echo $_SESSION["dateFrom"]; echo '" max="'.date("Y-m-d");?>" required/>
-                        <label for="dateTo">To:</label><input type="date" name="dateTo" value="<?php echo $_SESSION["dateTo"]; echo '" max="'.date("Y-m-d");?>" required/>
+                        <label for="dateFrom">From:</label><input type="date" name="dateFrom" 
+                        value="<?php echo $_SESSION["dateFrom"]; echo '" max="'.date("Y-m-d");?>" required/>
+                        <label for="dateTo">To:</label><input type="date" name="dateTo" 
+                        value="<?php echo $_SESSION["dateTo"]; echo '" max="'.date("Y-m-d");?>" required/>
                         <input type="submit" value="Click to filter"/>
                     </form>
                 </span>

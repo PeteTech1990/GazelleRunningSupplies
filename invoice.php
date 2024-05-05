@@ -134,15 +134,18 @@ use mysqli;
                     if(trim($_POST["txtEmail"]) == ""){header("Location:orderForm.php?invalid=blankEmail");break;}
                     else{$customerEmail = $_POST["txtEmail"];}
 
-                    $insertString = "'$customerName', '$customerAdd1', '$customerAdd2', '$customerCity', '$customerCounty', '$customerPostcode', '$customerNumber', '$customerEmail'";
+                    $insertString = "'$customerName', '$customerAdd1', '$customerAdd2', '$customerCity', 
+                    '$customerCounty', '$customerPostcode', '$customerNumber', '$customerEmail'";
                     
-                    $sqlComm = "INSERT INTO tblCustomer (customerName, addressLine1, addressLine2, city, county, postcode, contactNumber, emailAddress) VALUES ($insertString)";
+                    $sqlComm = "INSERT INTO tblCustomer (customerName, addressLine1, addressLine2, city, 
+                    county, postcode, contactNumber, emailAddress) VALUES ($insertString)";
                     
                     $this->sqlConnection->query($sqlComm);
 
                     $customerID = mysqli_insert_id($this->sqlConnection);
 
-                    $this->customer = new Customer($customerID, $customerName, $customerAdd1, $customerAdd2, $customerCity, $customerCounty, $customerPostcode, $customerNumber, $customerEmail);
+                    $this->customer = new Customer($customerID, $customerName, $customerAdd1, $customerAdd2, 
+                    $customerCity, $customerCounty, $customerPostcode, $customerNumber, $customerEmail);
                     break;
                 }
             }
