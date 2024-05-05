@@ -1,4 +1,4 @@
-/*https://www.w3schools.com/howto/howto_js_accordion.asp */
+/*Javascript Accordion Code (Next 15 lines) taken from: (w3schools, no date a)*/
 
 var acc = document.getElementsByClassName("accordion");
 var i;
@@ -17,18 +17,10 @@ for (i = 0; i < acc.length; i++) {
 
 /*****************************************/
 
-
-
-
-//Shopping Basket
-
-/**https://www.w3schools.com/howto/howto_css_modals.asp**/
-
+/*Inspiration and code for CSS Modals (Next 41 lines) taken from: (w3schools, no date b)*/
 
 var closeButtons = document.getElementsByClassName("close");
 var shoppingBasketModal = document.getElementById("modalShoppingBasket");
-
-
 
 // Get the modal
 var modalShoppingBasket = document.getElementById("modalShoppingBasket");
@@ -48,10 +40,6 @@ shoppingBasket.onclick = function () {
 shoppingBasketClose.onclick = function () {
     modalShoppingBasket.style.display = "none";
 }
-
-
-
-//Window Click
 
 var modalProductDetails = document.getElementsByClassName("modalProductDetails");
 

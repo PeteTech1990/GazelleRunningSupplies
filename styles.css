@@ -524,7 +524,7 @@ footer {
     margin-right: 5.4em;
 }
 
-/*https://www.w3schools.com/howto/howto_js_accordion.asp*/
+/*CSS Accordion Code (Next 25 lines) taken from: (w3schools, no date a)*/
 .accordion {
     background-color: #FFFFFF;
     color: #444;
@@ -553,7 +553,7 @@ footer {
 }
 /*****************************************************************/
 
-/*https://www.w3schools.com/howto/howto_css_modals.asp*/
+/*CSS Modal Code (Next 40 lines) taken from: (w3schools, no date b)*/
 
 /* The Modal (background) */
 .modal {
@@ -596,30 +596,3 @@ footer {
     }
 
 /*****************************************************************/
-
-/* Modal Content/Box */
-.modal-content-basket {
-    background-color: #fefefe;
-    margin: 15% auto;
-    padding: 20px;
-    border: 1px solid #888;
-    width: 35vw;
-    height: fit-content;
-    min-height: 80vh;
-
-}
-
-#shoppingBasketCloseButton {
-
-color: #aaa;
-    float: right;
-    font-size: 28px;
-    font-weight: bold;
-}
-
-    #shoppingBasketCloseButton:hover,
-    #shoppingBasketCloseButton:focus {
-        color: black;
-        text-decoration: none;
-        cursor: pointer;
-    }

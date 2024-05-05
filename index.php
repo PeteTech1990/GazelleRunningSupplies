@@ -409,7 +409,6 @@
         $dbConnect = new DBConnect;
         $dbConnect->RetrieveAllProducts();
 
-        //https://stackoverflow.com/questions/44887880/store-object-in-php-session
 
         if(!isset($_SESSION["basketID"]))
         {            
@@ -422,7 +421,7 @@
             $dbConnect->PopulateBasket();            
         }
         
-        //https://phppot.com/php/simple-php-shopping-cart/
+        //Inspiration for shopping basket method: (Vincy, 2022) 
         if(!empty($_GET["action"]))
         {
             switch($_GET["action"])
@@ -466,7 +465,7 @@
 </head>
 <body>
     
-    <!--https://www.w3schools.com/howto/howto_css_modals.asp-->
+    <!--Inspiration for CSS modal: (w3schools, no date b)-->
      
 
     <!-- The Modal -->
@@ -551,7 +550,7 @@
         <div id="productCategories">
             <h2>Product Categories</h2>
             <div id="productAccordion">
-                <!--https://www.w3schools.com/howto/howto_js_accordion.asp-->
+                <!--Inspiration for accordion view: (w3schools, no date a)-->
                 <button class="accordion">Shoes</button>
                 <div class="panel">
                     <div class="products">

@@ -108,8 +108,7 @@ use mysqli;
             {
                 while(true)
                 {
-                    //https://stackoverflow.com/questions/37142882/php-check-if-string-contains-space-between-words-not-at-beginning-or-end
-
+                   
                     if(trim($_POST["txtFullName"]) == ""){header("Location:orderForm.php?invalid=blankName");break;}
                     else{$customerName = trim($_POST["txtFullName"]);}
                     if(trim($_POST["txtAddress1"]) == ""){header("Location:orderForm.php?invalid=blankAddr");break;}
@@ -121,8 +120,8 @@ use mysqli;
                     if(trim($_POST["txtCounty"]) == ""){header("Location:orderForm.php?invalid=blankCounty");break;}
                     else{$customerCounty = $_POST["txtCounty"];}
 
-                    //https://ideal-postcodes.co.uk/guides/postcode-validation
-                    //
+                    //Source of postcode validation RegEx pattern: (Angeles, 2022) 
+                    
                     if(trim($_POST["txtPostcode"]) == ""){header("Location:orderForm.php?invalid=blankPost");break;}
                     else if(!preg_match("/^[a-z]{1,2}\d[a-z\d]?\s*\d[a-z]{2}$/i", trim($_POST["txtPostcode"])))
                     {header("Location:orderForm.php?invalid=badPost");break;}
